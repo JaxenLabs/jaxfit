@@ -9,8 +9,8 @@ import { FastingTab } from "./FastingTab";
 import { WaterTab } from "./WaterTab";
 
 const TABS = [
-  { id: "fasting", short: "Fasting", label: "Intermittent Fasting" },
   { id: "body", short: "BMI & Calories", label: "BMI, TDEE & Goal Date" },
+  { id: "fasting", short: "Fasting", label: "Intermittent Fasting" },
   { id: "water", short: "Water", label: "Water & Habit Garden" },
 ] as const;
 

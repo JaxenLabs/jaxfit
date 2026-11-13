@@ -22,7 +22,6 @@ import { chromium } from "playwright";
 
 const OUT = fileURLToPath(new URL("../out/", import.meta.url));
 const BASE = "/jaxfit";
-const JAXBUDGET = "https://play.google.com/store/apps/details?id=com.jaxenlabs.jaxbudget&referrer=utm_source%3Dweb_jaxfit_hub";
 const TOOLS = [
   { slug: "intermittent-fasting-calculator", tab: "fasting", title: /^Intermittent Fasting Calculator/ },
   { slug: "bmi-calculator", tab: "body", title: /^BMI Calculator/ },
@@ -195,16 +194,14 @@ await page.getByRole("button", { name: "Switch to light theme" }).click();
 check((await page.evaluate(() => document.documentElement.dataset.theme)) === "light", "light theme again");
 
 // --- Apps -------------------------------------------------------------------------------
-const budgetLinks = await page.locator(`a[href="${JAXBUDGET}"]`).count();
-check(budgetLinks >= 2, `JaxBudget Google Play links (${budgetLinks})`);
-check(!(await page.locator('a[href*="play.google.com"]:not([href*="jaxbudget"])').count()), "no JaxFit Play link while it is coming soon");
+check(!(await page.locator('a[href*="play.google.com"]').count()), "no Google Play links while JaxFit is coming soon");
 check((await page.locator("#apps").innerText()).includes("Coming Soon on Google Play"), "JaxFit coming soon card");
 await page.getByRole("button", { name: "Bookmark This Page" }).click();
 await page.waitForTimeout(300);
 check((await page.locator("#apps [role=status]").innerText()).includes("Ctrl+D"), "bookmark button copies the link and shows the shortcut");
 check((await page.evaluate(() => navigator.clipboard.readText())) === url(), "bookmark link copied");
 const body = await page.locator("body").innerText();
-check(!/Jaxen ?Labs|JaxScan|@[a-z0-9-]+\.[a-z]{2,}/i.test(body), "no company name, other apps or email on the page");
+check(!/Jaxen ?Labs|JaxScan|JaxBudget|@[a-z0-9-]+\.[a-z]{2,}/i.test(body), "no company name, other apps or email on the page");
 
 // --- Pages & SEO ------------------------------------------------------------------------
 console.log("Pages");

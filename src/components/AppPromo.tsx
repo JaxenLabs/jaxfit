@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { jaxbudget, jaxfit } from "@/content/apps";
-import { site } from "@/content/site";
+import { jaxfit } from "@/content/apps";
 import { BrandLogo } from "./BrandLogo";
 import { Icon } from "./Icon";
 
 /**
- * The app ecosystem: JaxFit (coming soon on Google Play) and JaxBudget
- * (live now). While JAXFIT_PLAY_STORE_URL in content/apps.ts is null, JaxFit
+ * The JaxFit app (coming soon on Google Play). While JAXFIT_PLAY_STORE_URL in content/apps.ts is null, JaxFit
  * shows a "Coming Soon" badge with a bookmark button; once it's set, every
  * badge becomes a live Google Play button.
  */
@@ -101,19 +99,14 @@ export function BookmarkButton({ className = "" }: { className?: string }) {
   );
 }
 
-function JaxBudgetIcon({ className = "size-14" }: { className?: string }) {
-  // eslint-disable-next-line @next/next/no-img-element -- static export: plain <img> with a fixed size
-  return <img src={`${site.basePath}/images/jaxbudget-icon.png`} alt="JaxBudget app icon" width={56} height={56} loading="lazy" decoding="async" className={`rounded-2xl ${className}`} />;
-}
-
-/** The two-card app section shown straight after the calculator. */
+/** The JaxFit app section shown straight after the calculator. */
 export function AppEcosystem() {
   return (
     <section id="apps" aria-labelledby="apps-title" className="scroll-mt-24">
       <h2 id="apps-title" className="sr-only">
-        JaxFit and JaxBudget apps
+        The JaxFit app
       </h2>
-      <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr] lg:gap-6">
+      <div>
         <article className="card relative overflow-hidden p-5 sm:p-7">
           <div aria-hidden className="pointer-events-none absolute -top-24 -right-20 size-72 rounded-full bg-accent-2/15 blur-3xl" />
           <div className="relative flex items-center gap-4">
@@ -127,7 +120,7 @@ export function AppEcosystem() {
             </div>
           </div>
           <h3 className="relative mt-5 text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl">{jaxfit.headline}</h3>
-          <ul className="relative mt-5 grid gap-3 sm:grid-cols-2">
+          <ul className="relative mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {jaxfit.pillars.map((p) => (
               <li key={p.title} className="flex gap-3 rounded-2xl bg-field p-4">
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent">
@@ -146,57 +139,22 @@ export function AppEcosystem() {
           </div>
         </article>
 
-        <article className="card flex flex-col p-5 sm:p-7">
-          <div className="flex items-center gap-4">
-            <JaxBudgetIcon />
-            <div className="min-w-0">
-              <p className="text-lg font-extrabold">{jaxbudget.name}</p>
-              <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent">
-                <span className="size-2 rounded-full bg-accent-2" />
-                Live App Available Now
-              </p>
-            </div>
-          </div>
-          <h3 className="mt-5 text-2xl leading-tight font-extrabold tracking-tight">{jaxbudget.headline}</h3>
-          <p className="mt-3 leading-relaxed text-muted">
-            Download <strong className="text-text">{jaxbudget.name}</strong> on Google Play — {jaxbudget.text}
-          </p>
-          <ul className="mt-5 space-y-2 text-sm font-semibold">
-            {["100% offline", "Zero bank logins", "Zero ads", "Free on Google Play"].map((t) => (
-              <li key={t} className="flex items-center gap-2">
-                <Icon name="check" className="size-4 text-accent" />
-                {t}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto pt-6">
-            <PlayBadge href={jaxbudget.url} app={jaxbudget.name} />
-          </div>
-        </article>
       </div>
     </section>
   );
 }
 
-/** Wide screens: the apps beside the calculator, so they're seen without scrolling. */
+/** Wide screens: the app beside the calculator, so it's seen without scrolling. */
 export function HeroAside() {
   return (
     <aside aria-label="JaxFit app" className="hidden lg:block">
-      <div className="sticky top-28 space-y-4">
+      <div className="sticky top-28">
         <div className="card overflow-hidden p-5 text-center">
           <BrandLogo size={96} eager className="mx-auto size-24 rounded-3xl shadow-xl" />
           <p className="mt-4 text-lg font-extrabold">{jaxfit.title}</p>
           <p className="mt-1 text-sm leading-relaxed text-muted">Fasting timer, halal meal plans, weight tracking and your Habit Garden, 100% offline.</p>
           <JaxFitBadge placement="hero" className="mt-4" />
         </div>
-        <a href={jaxbudget.url} target="_blank" rel="noopener" className="card flex items-center gap-3 p-4 transition-transform hover:-translate-y-0.5">
-          <JaxBudgetIcon className="size-12" />
-          <span className="min-w-0 flex-1 text-sm font-bold">
-            Try {jaxbudget.name} today
-            <span className="block text-xs font-semibold text-muted">Offline budgets · Free on Google Play</span>
-          </span>
-          <Icon name="play" className="size-5 shrink-0 text-accent" />
-        </a>
       </div>
     </aside>
   );

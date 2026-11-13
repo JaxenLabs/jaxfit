@@ -1,5 +1,5 @@
 /**
- * The two apps promoted on every page.
+ * The JaxFit app, promoted on every page.
  *
  * JAXFIT LAUNCH: paste JaxFit's Google Play address into
  * JAXFIT_PLAY_STORE_URL below. Every "Coming Soon" badge on every page then
@@ -36,11 +36,4 @@ export const jaxfit = {
       text: "Real-time glycogen, ketosis and autophagy insights, plus timer notifications while you fast.",
     },
   ],
-} as const;
-
-export const jaxbudget = {
-  name: "JaxBudget",
-  url: "https://play.google.com/store/apps/details?id=com.jaxenlabs.jaxbudget&referrer=utm_source%3Dweb_jaxfit_hub",
-  headline: "Love 100% Offline, Ad-Free Privacy? Try Our Live App Today",
-  text: "track your weekly healthy grocery budget, meal-prep spending, and monthly bills 100% offline with zero bank logins and zero ads.",
 } as const;

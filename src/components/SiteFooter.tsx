@@ -1,10 +1,10 @@
 import { PageLink as Link } from "@/components/PageLink";
-import { jaxbudget, jaxfit } from "@/content/apps";
+import { jaxfit } from "@/content/apps";
 import { site } from "@/content/site";
 import { TOOLS } from "@/content/tools";
 import { BrandLogo } from "./BrandLogo";
 
-/** Bottom of the page: what JaxFit is, the calculators, the apps, copyright. */
+/** Bottom of the page: what JaxFit is, the calculators, the app, copyright. */
 export function SiteFooter() {
   const play = jaxfit.play("footer");
   return (
@@ -32,16 +32,11 @@ export function SiteFooter() {
           </ul>
         </nav>
         <div>
-          <p className="text-xs font-extrabold tracking-wide text-muted uppercase">Apps</p>
+          <p className="text-xs font-extrabold tracking-wide text-muted uppercase">App</p>
           <ul className="mt-3 space-y-1 text-sm font-semibold">
             <li>
               <a href={play ?? "#apps"} {...(play && { target: "_blank", rel: "noopener" })} className="inline-flex min-h-10 items-center hover:text-accent">
                 {play ? `${jaxfit.title} on Google Play` : `${jaxfit.title} (coming soon)`}
-              </a>
-            </li>
-            <li>
-              <a href={jaxbudget.url} target="_blank" rel="noopener" className="inline-flex min-h-10 items-center hover:text-accent">
-                JaxBudget on Google Play
               </a>
             </li>
           </ul>
