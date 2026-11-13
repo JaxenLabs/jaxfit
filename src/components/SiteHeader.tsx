@@ -1,7 +1,7 @@
 import { PageLink as Link } from "@/components/PageLink";
 import { jaxfit } from "@/content/apps";
-import { TOOLS } from "@/content/tools";
 import { BrandLogo } from "./BrandLogo";
+import { HeaderNav } from "./HeaderNav";
 import { Icon } from "./Icon";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -21,13 +21,7 @@ export function SiteHeader() {
             Jax<span className="text-accent">Fit</span>
           </span>
         </Link>
-        <nav aria-label="Calculators" className="hidden items-center gap-0.5 text-sm font-bold xl:flex">
-          {TOOLS.map((t) => (
-            <Link key={t.slug} href={`/${t.slug}/`} className="rounded-xl px-2.5 py-2 whitespace-nowrap text-muted transition-colors hover:bg-accent-soft hover:text-accent">
-              {t.nav.replace(" Calculator", "")}
-            </Link>
-          ))}
-        </nav>
+        <HeaderNav />
         <div className="flex shrink-0 items-center gap-2">
           <ThemeToggle />
           <a

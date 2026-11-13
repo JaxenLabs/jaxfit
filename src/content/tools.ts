@@ -208,6 +208,24 @@ export const TOOLS: ToolPage[] = [
 export const DEFAULT_TOOL = TOOLS[0];
 export const toolBySlug = (slug: string) => TOOLS.find((t) => t.slug === slug);
 
+/**
+ * The calculators linked in the header, "More calculators" and the footer, in this
+ * order. The intermittent fasting calculator is left out of all three for now;
+ * it is still the main page (the logo opens it).
+ */
+export const NAV_TOOLS = ["bmi-calculator", "16-8-fasting-schedule", "water-intake-calculator", "calorie-deficit-calculator"].map((slug) => toolBySlug(slug)!);
+
+/**
+ * The page each calculator tab opens, so the headline, guide and FAQ always
+ * match the open tab. (A page already on that tab, like the calorie deficit
+ * page for "BMI & Calories", stays where it is.)
+ */
+export const TAB_PAGES: Record<TabId, string> = {
+  body: "bmi-calculator",
+  fasting: "16-8-fasting-schedule",
+  water: "water-intake-calculator",
+};
+
 export const steps = [
   { title: "Enter your details", text: "Height, weight, age and activity, in metric or imperial. They're saved on this device for next time." },
   { title: "Plan your fasting window", text: "Pick 14:10, 16:8, 18:6, 20:4, 24h or your own plan and the time your last meal ends." },

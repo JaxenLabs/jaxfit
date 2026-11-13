@@ -1,7 +1,7 @@
 import { PageLink as Link } from "@/components/PageLink";
 import { jaxfit } from "@/content/apps";
 import { site } from "@/content/site";
-import { TOOLS } from "@/content/tools";
+import { NAV_TOOLS } from "@/content/tools";
 import { BrandLogo } from "./BrandLogo";
 
 /** Bottom of the page: what JaxFit is, the calculators, the app, copyright. */
@@ -22,7 +22,7 @@ export function SiteFooter() {
             Calculators
           </p>
           <ul className="mt-3 space-y-1">
-            {TOOLS.map((t) => (
+            {NAV_TOOLS.map((t) => (
               <li key={t.slug}>
                 <Link href={`/${t.slug}/`} className="inline-flex min-h-10 items-center text-sm font-semibold hover:text-accent">
                   {t.nav}

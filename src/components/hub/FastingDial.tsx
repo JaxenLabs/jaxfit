@@ -14,16 +14,23 @@ function Arc({ start, length, className, width = 18 }: { start: number; length: 
       r={R}
       fill="none"
       strokeWidth={width}
-      strokeDasharray={`${(Math.min(length, DAY) / DAY) * C} ${C}`}
-      transform={`rotate(${(start / DAY) * 360 - 90} 100 100)`}
+      strokeDasharray={`${r2((Math.min(length, DAY) / DAY) * C)} ${r2(C)}`}
+      transform={`rotate(${r2((start / DAY) * 360 - 90)} 100 100)`}
       className={className}
     />
   );
 }
 
+/**
+ * Coordinates are rounded to 2 decimals: the server (building the page) and
+ * the browser can differ in the last digits of sin/cos, which React would
+ * report as a mismatch when the page loads.
+ */
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
 const point = (minutes: number, r: number) => {
   const a = (minutes / DAY) * 2 * Math.PI - Math.PI / 2;
-  return { x: 100 + r * Math.cos(a), y: 100 + r * Math.sin(a) };
+  return { x: r2(100 + r * Math.cos(a)), y: r2(100 + r * Math.sin(a)) };
 };
 
 /**

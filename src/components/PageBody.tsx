@@ -4,7 +4,7 @@ import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
 import { PageLink as Link } from "@/components/PageLink";
 import { JaxFitHub } from "@/components/hub/JaxFitHub";
-import { TOOLS, disclaimer, privacyPoints, steps, type ToolPage } from "@/content/tools";
+import { NAV_TOOLS, disclaimer, privacyPoints, steps, type ToolPage } from "@/content/tools";
 import { pageJsonLd } from "@/lib/seo";
 
 /**
@@ -28,7 +28,7 @@ export function PageBody({ tool }: { tool: ToolPage }) {
             100% private: runs in your browser, nothing is uploaded
           </p>
           <div className="mt-6">
-            <JaxFitHub defaultTab={tool.tab} defaultProtocol={tool.protocol} />
+            <JaxFitHub key={tool.slug} defaultTab={tool.tab} defaultProtocol={tool.protocol} />
           </div>
           <p className="mt-4 text-xs leading-relaxed text-muted">{disclaimer}</p>
         </div>
@@ -81,8 +81,8 @@ export function PageBody({ tool }: { tool: ToolPage }) {
 
         <nav aria-labelledby="more-title">
           <SectionTitle id="more-title" eyebrow="More calculators" title="Free JaxFit Calculators" />
-          <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-            {TOOLS.map((t) => (
+          <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {NAV_TOOLS.map((t) => (
               <li key={t.slug}>
                 <Link
                   href={`/${t.slug}/`}

@@ -70,7 +70,14 @@ page.on("request", (r) => {
 
 const testId = (id) => page.locator(`[data-testid="${id}"]`).first().innerText();
 const panel = (id) => page.locator(`#panel-${id}`);
-const tab = (id) => page.locator(`#tab-${id}`).click();
+/** Picks a calculator tab and waits for its page to load (tabs other than the page's own open their page). */
+async function tab(id) {
+  const before = page.url();
+  await page.locator(`#tab-${id}`).click();
+  await page.waitForURL((u) => u.href !== before, { timeout: 3000 }).catch(() => {});
+  await page.waitForLoadState("networkidle");
+  await page.locator(`#tab-${id}[aria-selected="true"]`).waitFor();
+}
 const schedule = async () => (await panel("fasting").locator('[data-testid="schedule"]').innerText()).replace(/\s+/g, " ");
 /** Fills a labelled number box in a tab's details form. */
 const fill = (tabId, label, value) => panel(tabId).getByLabel(label, { exact: true }).first().fill(String(value));
@@ -199,11 +206,40 @@ check((await page.locator("#apps").innerText()).includes("Coming Soon on Google 
 await page.getByRole("button", { name: "Bookmark This Page" }).click();
 await page.waitForTimeout(300);
 check((await page.locator("#apps [role=status]").innerText()).includes("Ctrl+D"), "bookmark button copies the link and shows the shortcut");
-check((await page.evaluate(() => navigator.clipboard.readText())) === url(), "bookmark link copied");
+check((await page.evaluate(() => navigator.clipboard.readText())) === page.url().split("#")[0], "bookmark copies this page's link");
 const body = await page.locator("body").innerText();
 check(!/Jaxen ?Labs|JaxScan|JaxBudget|@[a-z0-9-]+\.[a-z]{2,}/i.test(body), "no company name, other apps or email on the page");
 
 // --- Pages & SEO ------------------------------------------------------------------------
+// --- Header menu and calculator tabs stay in step ---------------------------------
+console.log("Header menu");
+{
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const highlighted = () => page.locator('header [aria-current="page"]').innerText();
+  const nav = await page.locator('header nav[aria-label="Calculators"] a').allInnerTexts();
+  check(nav.join(",") === "BMI,16:8 Fasting Schedule,Water Intake,Calorie Deficit", `header links: ${nav.join(", ")}`);
+  const footer = await page.locator("footer nav a").allInnerTexts();
+  check(!footer.includes("Fasting Calculator") && footer.length === 4, "footer lists the same four calculators");
+  await page.goto(url("bmi-calculator/"));
+  await page.waitForLoadState("networkidle");
+  check((await highlighted()) === "BMI", "BMI page highlights BMI");
+  await tab("water");
+  check(
+    page.url() === url("water-intake-calculator/") && (await highlighted()) === "Water Intake" && (await page.locator("h1").innerText()).startsWith("Daily Water Intake"),
+    "the Water tab opens the water page: headline, header and content follow",
+  );
+  await tab("fasting");
+  check(page.url() === url("16-8-fasting-schedule/") && (await highlighted()) === "16:8 Fasting Schedule", "the Fasting tab opens the 16:8 page");
+  await page.locator("header").getByRole("link", { name: "BMI", exact: true }).click();
+  await page.waitForURL(url("bmi-calculator/"));
+  check((await page.locator("#tab-body").getAttribute("aria-selected")) === "true" && (await highlighted()) === "BMI", "the header's BMI link opens the BMI tab");
+  await page.locator("header").getByRole("link", { name: "Calorie Deficit" }).click();
+  await page.waitForURL(url("calorie-deficit-calculator/"));
+  check((await highlighted()) === "Calorie Deficit" && (await page.locator("#tab-body").getAttribute("aria-selected")) === "true", "Calorie Deficit page: its link and the BMI & Calories tab");
+  await page.goto(url());
+  await page.waitForLoadState("networkidle");
+}
+
 console.log("Pages");
 check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxenlabs.github.io/jaxfit/intermittent-fasting-calculator/", "main page canonical is the fasting calculator");
 for (const t of TOOLS) {
