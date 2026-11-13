@@ -100,10 +100,13 @@ body {
 
 ::selection { background: color-mix(in srgb, var(--accent) 25%, transparent); }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 0.75rem;
+/* In the base layer so a component can replace it (e.g. the search box shows its own focus border). */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
 }
 
 @layer components {
