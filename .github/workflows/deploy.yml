@@ -1,33 +1,39 @@
-# The site lives on Cloudflare Pages (https://jaxfit.pages.dev). Cloudflare builds and
-# publishes it itself on every push to main, and gives the develop branch its
-# own preview address. Work happens on develop; merging it into main deploys.
+# Publishes the site to Cloudflare Pages (https://jaxfit.pages.dev).
 #
-# This workflow only keeps the old GitHub Pages address working: on every push
-# to main it builds the site and publishes, in its place, pages that forward
-# visitors and search engines to the same page on Cloudflare
-# (scripts/github-redirects.mjs).
-name: Forward GitHub Pages to Cloudflare
+# Work happens on the develop branch: every push to develop is built, tested
+# and published as a preview (https://develop.jaxfit.pages.dev).
+# Merging develop into main and pushing main publishes the live site.
+#
+# On main it also keeps the old GitHub Pages address working: it publishes
+# pages there that forward visitors and search engines to the same page on
+# Cloudflare (scripts/github-redirects.mjs).
+#
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN (a Cloudflare API token
+# with Account > Cloudflare Pages > Edit) and CLOUDFLARE_ACCOUNT_ID.
+name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
-  group: pages
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: true
 
 env:
+  CLOUDFLARE_PROJECT: jaxfit
   CLOUDFLARE_URL: https://jaxfit.pages.dev
   GITHUB_PAGES_FOLDER: /jaxfit
 
 jobs:
-  build:
+  cloudflare:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,13 +43,26 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: node scripts/github-redirects.mjs out github-pages "$CLOUDFLARE_URL" "$GITHUB_PAGES_FOLDER"
-      - uses: actions/upload-pages-artifact@v3
+      # The end-to-end tests run against the built site before anything is published.
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=${{ env.CLOUDFLARE_PROJECT }} --branch=${{ github.ref_name }} --commit-dirty=true
+      - name: Forwarding pages for the old GitHub Pages address
+        if: github.ref_name == 'main'
+        run: node scripts/github-redirects.mjs out github-pages "$CLOUDFLARE_URL" "$GITHUB_PAGES_FOLDER"
+      - if: github.ref_name == 'main'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: github-pages
 
-  deploy:
-    needs: build
+  github-pages:
+    if: github.ref_name == 'main'
+    needs: cloudflare
     runs-on: ubuntu-latest
     environment:
       name: github-pages
