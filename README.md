@@ -2,7 +2,7 @@
 
 Free intermittent fasting, BMI, calorie deficit and water intake calculators that run **100% in the browser**. Nothing is uploaded: details, the fasting timer and the Habit Garden are saved in the visitor's own browser only. No accounts, analytics, tracking or ads.
 
-Live: **https://jaxenlabs.github.io/jaxfit/**
+Live: **https://jaxfit.pages.dev/**
 
 | Page | Opens on |
 | --- | --- |

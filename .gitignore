@@ -7,3 +7,6 @@ next-env.d.ts
 npm-debug.log*
 .env*.local
 
+
+# Built by scripts/github-redirects.mjs in CI
+github-pages/

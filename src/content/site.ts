@@ -10,10 +10,10 @@
 export const site = {
   name: "JaxFit",
   brandName: "JaxFit — Intermittent Fasting, Weight Loss & Healthy BMI Blueprint",
-  /** Where the site is served from (no trailing slash). */
-  origin: "https://jaxenlabs.github.io",
-  /** The folder the site lives in on that origin: the repo name on GitHub Pages. */
-  basePath: "/jaxfit",
+  /** Where the site is served from (no trailing slash): its Cloudflare Pages address. */
+  origin: "https://jaxfit.pages.dev",
+  /** The folder the site lives in on that origin ("" = the root). */
+  basePath: "",
   /** Shown as author and publisher; `logoPath` is inside this site. */
   publisher: { name: "JaxFit", logoPath: "/images/jaxfit-logo.png" },
   /** Short line for the share card, app manifest and footer. */

@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const OUT = fileURLToPath(new URL("../out/", import.meta.url));
-const BASE = "/jaxfit";
+const BASE = "";
 const TOOLS = [
   { slug: "intermittent-fasting-calculator", tab: "fasting", title: /^Intermittent Fasting Calculator/ },
   { slug: "bmi-calculator", tab: "body", title: /^BMI Calculator/ },
@@ -241,7 +241,7 @@ console.log("Header menu");
 }
 
 console.log("Pages");
-check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxenlabs.github.io/jaxfit/intermittent-fasting-calculator/", "main page canonical is the fasting calculator");
+check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxfit.pages.dev/intermittent-fasting-calculator/", "main page canonical is the fasting calculator");
 for (const t of TOOLS) {
   await page.goto(url(`${t.slug}/`));
   await page.waitForLoadState("networkidle");
@@ -252,7 +252,7 @@ for (const t of TOOLS) {
   const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
   check(
     t.title.test(title) &&
-      canonical === `https://jaxenlabs.github.io/jaxfit/${t.slug}/` &&
+      canonical === `https://jaxfit.pages.dev/${t.slug}/` &&
       (await page.locator(`#tab-${t.tab}`).getAttribute("aria-selected")) === "true" &&
       types.includes("WebApplication") &&
       faq.mainEntity.length === 6 &&
@@ -271,7 +271,7 @@ await page.waitForURL(url("bmi-calculator/"));
 check((await page.locator("h1").innerText()).startsWith("WHO BMI Calculator"), "footer link opens the BMI calculator");
 
 const sitemap = await (await fetch(url("sitemap.xml"))).text();
-check(TOOLS.every((t) => sitemap.includes(`/jaxfit/${t.slug}/`)), "sitemap lists the five pages");
+check(TOOLS.every((t) => sitemap.includes(`.pages.dev/${t.slug}/`)), "sitemap lists the five pages");
 const res404 = await fetch(url("nope/"));
 check(res404.status === 404, "unknown pages are 404");
 
