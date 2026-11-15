@@ -1,0 +1,3 @@
+# Cloudflare Pages would redirect this .html address to one without .html;
+# Google Search Console needs the file at its exact address, so serve it directly.
+/google88897a4d8dc2d04e.html /google88897a4d8dc2d04e 200
