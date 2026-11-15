@@ -329,14 +329,15 @@ export const TOOLS: ToolPage[] = [
   },
 ];
 
-/** The main page shows the intermittent fasting calculator (its canonical page). */
-export const DEFAULT_TOOL = TOOLS[0];
 export const toolBySlug = (slug: string) => TOOLS.find((t) => t.slug === slug);
+
+/** The main page shows the BMI calculator (its canonical page), so BMI is selected by default. */
+export const DEFAULT_TOOL = toolBySlug("bmi-calculator")!;
 
 /**
  * The calculators linked in the header, "More calculators" and the footer, in this
  * order. The intermittent fasting calculator is left out of all three for now;
- * it is still the main page (the logo opens it).
+ * its page is still in the sitemap.
  */
 export const NAV_TOOLS = ["bmi-calculator", "16-8-fasting-schedule", "water-intake-calculator", "calorie-deficit-calculator"].map((slug) => toolBySlug(slug)!);
 

@@ -6,9 +6,9 @@ import { DEFAULT_TOOL, NAV_TOOLS, toolBySlug } from "@/content/tools";
 
 /**
  * The calculator links in the header (wide screens). The page you are on is
- * highlighted like a selected tab. The main page (the fasting calculator,
- * which has no header link) highlights 16:8 Fasting Schedule, the link for
- * the same tab.
+ * highlighted like a selected tab. The main page shows the BMI calculator,
+ * so BMI is highlighted there. Pages without a header link highlight the
+ * link for their tab.
  */
 export function HeaderNav() {
   // The path without the site's basePath, e.g. "/bmi-calculator/".

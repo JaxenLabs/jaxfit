@@ -95,7 +95,11 @@ const fill = (tabId, label, value) => panel(tabId).getByLabel(label, { exact: tr
 console.log("Fasting tab");
 await page.goto(url());
 await page.waitForLoadState("networkidle");
-check((await page.locator("#tab-fasting").getAttribute("aria-selected")) === "true", "main page opens on the fasting tab");
+check((await page.locator("#tab-body").getAttribute("aria-selected")) === "true", "main page opens on the BMI tab");
+check((await page.locator("header nav [aria-current=page]").innerText()) === "BMI", "main page highlights BMI in the header");
+await page.goto(url("16-8-fasting-schedule/"));
+await page.waitForLoadState("networkidle");
+check((await page.locator("#tab-fasting").getAttribute("aria-selected")) === "true", "the 16:8 page opens on the fasting tab");
 check((await page.locator('[role="radio"][aria-checked="true"]').innerText()).includes("16:8"), "16:8 is the default plan");
 let s = await schedule();
 check(s.includes("Fast begins 8:00 PM") && s.includes("12:00 PM next day") && s.includes("8 hours") && s.includes("Window closer meal 8:00 PM next day"), `16:8 from 8 PM: ${s}`);
@@ -250,7 +254,7 @@ console.log("Header menu");
 }
 
 console.log("Pages");
-check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxfit.pages.dev/intermittent-fasting-calculator/", "main page canonical is the fasting calculator");
+check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxfit.pages.dev/bmi-calculator/", "main page canonical is the BMI calculator");
 for (const t of TOOLS) {
   await page.goto(url(`${t.slug}/`));
   await page.waitForLoadState("networkidle");
