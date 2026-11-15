@@ -11,5 +11,5 @@ import { toolMetadata } from "@/lib/seo";
 export const metadata: Metadata = toolMetadata(DEFAULT_TOOL);
 
 export default function Home() {
-  return <PageBody tool={DEFAULT_TOOL} />;
+  return <PageBody tool={DEFAULT_TOOL} home />;
 }

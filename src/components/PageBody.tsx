@@ -4,15 +4,19 @@ import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
 import { PageLink as Link } from "@/components/PageLink";
 import { JaxFitHub } from "@/components/hub/JaxFitHub";
-import { NAV_TOOLS, disclaimer, privacyPoints, steps, type ToolPage } from "@/content/tools";
+import { NAV_TOOLS, POPULAR_TOOLS, disclaimer, howTo, privacyPoints, type ToolPage } from "@/content/tools";
 import { pageJsonLd } from "@/lib/seo";
 
 /**
  * The whole page, shared by every calculator page. The calculator comes
  * first (with the JaxFit app beside it on wide screens), then the two app
  * cards, then the guide, how-to, privacy, FAQ and links to the other calculators.
+ * The main page (`home`) and the extra landing pages also list the popular
+ * plans (POPULAR_TOOLS), which aren't in the header or footer.
  */
-export function PageBody({ tool }: { tool: ToolPage }) {
+export function PageBody({ tool, home = false }: { tool: ToolPage; home?: boolean }) {
+  const { title: howToTitle, steps } = howTo(tool);
+  const popular = home || POPULAR_TOOLS.includes(tool);
   return (
     <>
       <JsonLd data={pageJsonLd(tool)} />
@@ -48,7 +52,7 @@ export function PageBody({ tool }: { tool: ToolPage }) {
         </section>
 
         <section id="how-to" aria-labelledby="how-to-title">
-          <SectionTitle id="how-to-title" eyebrow="Step by step" title="How to Use the JaxFit Calculator" />
+          <SectionTitle id="how-to-title" eyebrow="Step by step" title={howToTitle} />
           <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
               <li key={s.title} className="card p-5">
@@ -79,25 +83,50 @@ export function PageBody({ tool }: { tool: ToolPage }) {
           </div>
         </section>
 
+        {popular && (
+          <nav aria-labelledby="popular-title">
+            <SectionTitle id="popular-title" eyebrow="Popular plans" title="Popular Fasting & Weight Calculators" />
+            <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {POPULAR_TOOLS.map((t) => (
+                <li key={t.slug}>
+                  <ToolLink tool={t} current={t.slug === tool.slug} label={t.nav} />
+                </li>
+              ))}
+              {!home && (
+                <li>
+                  <ToolLink href="/" label="All JaxFit calculators" />
+                </li>
+              )}
+            </ul>
+          </nav>
+        )}
+
         <nav aria-labelledby="more-title">
           <SectionTitle id="more-title" eyebrow="More calculators" title="Free JaxFit Calculators" />
           <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {NAV_TOOLS.map((t) => (
               <li key={t.slug}>
-                <Link
-                  href={`/${t.slug}/`}
-                  aria-current={t.slug === tool.slug ? "page" : undefined}
-                  className="flex min-h-14 items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 font-bold transition-colors hover:border-accent aria-[current=page]:border-accent aria-[current=page]:text-accent"
-                >
-                  {t.nav}
-                  <Icon name="chevron" className="size-4 shrink-0 -rotate-90 text-muted" />
-                </Link>
+                <ToolLink tool={t} current={t.slug === tool.slug} label={t.nav} />
               </li>
             ))}
           </ul>
         </nav>
       </div>
     </>
+  );
+}
+
+/** A big tap-target link to a calculator page (or `href`). */
+function ToolLink({ tool, href, current = false, label }: { tool?: ToolPage; href?: string; current?: boolean; label: string }) {
+  return (
+    <Link
+      href={href ?? `/${tool!.slug}/`}
+      aria-current={current ? "page" : undefined}
+      className="flex min-h-14 items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 font-bold transition-colors hover:border-accent aria-[current=page]:border-accent aria-[current=page]:text-accent"
+    >
+      {label}
+      <Icon name="chevron" className="size-4 shrink-0 -rotate-90 text-muted" />
+    </Link>
   );
 }
 

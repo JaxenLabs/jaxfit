@@ -1,7 +1,7 @@
 import type { ProtocolId } from "@/lib/fit/fasting";
 
 /**
- * The five calculator pages. They all show the same calculator hub, opened
+ * The calculator pages. They all show the same calculator hub, opened
  * on a different tab, with their own title, description, headline, guide
  * and FAQ so each can rank for its own searches.
  */
@@ -67,6 +67,30 @@ const QA = {
     q: "Does drinking water help with weight loss and fasting?",
     a: "Water has no calories, helps you feel full and can make fasting windows easier by easing hunger pangs, which often feel similar to thirst. Drinking a glass before meals may help some people eat a little less. During a fast, water, black coffee and plain tea won't break it. Adding a pinch of salt is sometimes used on long fasts, but check with your doctor if you watch your salt intake.",
   },
+  eighteenSix: {
+    q: "How do I start an 18:6 fasting schedule?",
+    a: "Choose when your last meal ends, for example 8 PM. Your fast then runs until 2 PM the next day, and you eat between 2 PM and 8 PM. Most people get there from 16:8 by moving their first meal an hour later each week. Drink water, black coffee or plain tea in the morning, and make your two meals filling, with plenty of protein and vegetables.",
+  },
+  eighteenSixResults: {
+    q: "Is 18:6 better than 16:8 for weight loss?",
+    a: "18:6 gives you two more hours in the fasting stages each day and a shorter window, which makes it easier for some people to eat a little less. But weight loss mostly comes from your overall calorie balance, and the best plan is the one you can keep up. If 18:6 leaves you very hungry, irritable or eating too much in your window, 16:8 is just as good a choice.",
+  },
+  twentyFour: {
+    q: "What is 20:4 fasting (the Warrior Diet)?",
+    a: "On 20:4 you fast for 20 hours and eat within a 4-hour window each day, for example 4 PM to 8 PM. It's sometimes called the Warrior Diet. With only one or two meals, it's important to eat enough protein, vegetables, fruit and healthy fats in that window. It's an advanced plan: build up from 16:8 or 18:6 first, and don't use it if you're pregnant, breastfeeding, underweight, under 18 or have a history of eating disorders.",
+  },
+  twentyFourMeals: {
+    q: "What should I eat on a 20:4 schedule?",
+    a: "Plan one substantial meal and one smaller meal or snack in your 4-hour window. Build each around protein (eggs, fish, chicken, lentils, beans or yoghurt), vegetables and whole grains, with some healthy fat. Eating too little on a short window is easy, so check your calorie target in the BMI & Calories tab and don't aim far below it.",
+  },
+  idealWeight: {
+    q: "How is my ideal weight calculated?",
+    a: "JaxFit uses the World Health Organization's healthy BMI range: every weight that gives a BMI between 18.5 and 24.9 at your height is a healthy weight. For example, at 165 cm (5 ft 5 in) that's about 50.4 to 67.8 kg (111 to 149 lb). Older formulas such as Devine or Robinson give a single number, but a range is more realistic, because frame, muscle and age all differ.",
+  },
+  idealWeightGoal: {
+    q: "How should I choose a goal weight?",
+    a: "Pick a weight inside your healthy range that you can reach and keep without extreme dieting. If you have a lot to lose, a first goal of 5–10% of your current weight already brings real health benefits. Enter it as your goal in the BMI & Calories tab to see a safe daily calorie target and an estimated goal date. JaxFit won't plan towards a goal below a healthy BMI.",
+  },
 } satisfies Record<string, Qa>;
 
 export interface ToolPage {
@@ -84,6 +108,8 @@ export interface ToolPage {
   intro: string;
   guide: { title: string; paragraphs: string[] };
   faq: Qa[];
+  /** The how-to section's title and steps, when the page has its own (otherwise the shared `steps`). */
+  howTo?: { title: string; steps: { title: string; text: string }[] };
 }
 
 export const TOOLS: ToolPage[] = [
@@ -92,9 +118,9 @@ export const TOOLS: ToolPage[] = [
     nav: "Fasting Calculator",
     tab: "fasting",
     protocol: "16:8",
-    title: "Intermittent Fasting Calculator – 16:8 Schedule & Fasting Window",
+    title: "Intermittent Fasting Calculator – 16:8 Schedule & Timer",
     description:
-      "Free intermittent fasting calculator: plan 14:10, 16:8, 18:6, 20:4 or 24h fasts, see your eating window, body stages hour by hour and run a live fasting timer. Private, no sign-up.",
+      "Free intermittent fasting calculator: plan 14:10, 16:8, 18:6, 20:4 or 24h fasts, see your eating window and body stages, and run a live fasting timer.",
     keywords: ["intermittent fasting calculator", "fasting window calculator", "16 8 fasting schedule", "fasting timer", "intermittent fasting schedule", "autophagy timeline", "18 6 fasting", "20 4 fasting"],
     h1: "Intermittent Fasting Calculator",
     highlight: "& Live Fasting Timer",
@@ -117,7 +143,7 @@ export const TOOLS: ToolPage[] = [
     protocol: "16:8",
     title: "BMI Calculator – WHO Categories & Healthy Weight Range",
     description:
-      "Free WHO BMI calculator for adults in kg/cm or lb/ft-in. See your BMI category, healthy weight range for your height and daily calories, with built-in safety checks. Private, no sign-up.",
+      "Free WHO BMI calculator for adults in kg/cm or lb/ft-in: your BMI category, healthy weight range for your height and daily calories. Private, no sign-up.",
     keywords: ["bmi calculator", "who bmi calculator", "healthy weight range calculator", "bmi chart", "body mass index calculator", "ideal weight for height", "bmi calculator kg cm", "bmi calculator lbs"],
     h1: "WHO BMI Calculator",
     highlight: "& Healthy Weight Range",
@@ -140,7 +166,7 @@ export const TOOLS: ToolPage[] = [
     protocol: "16:8",
     title: "Calorie Deficit Calculator – TDEE & Weight Loss Goal Date",
     description:
-      "Free calorie deficit and TDEE calculator (Mifflin-St Jeor): get a safe daily calorie target, your estimated goal date and a 7, 30 and 90-day weight trend. Private, no sign-up.",
+      "Free calorie deficit and TDEE calculator (Mifflin-St Jeor): a safe daily calorie target, your estimated goal date and a 7, 30 and 90-day weight trend.",
     keywords: ["calorie deficit calculator", "tdee calculator", "weight loss goal date calculator", "maintenance calories calculator", "bmr calculator", "how many calories to lose weight", "weight loss calculator", "mifflin st jeor calculator"],
     h1: "Calorie Deficit Calculator",
     highlight: "& Goal Date Planner",
@@ -163,7 +189,7 @@ export const TOOLS: ToolPage[] = [
     protocol: "16:8",
     title: "16:8 Fasting Schedule – Eating Window Times & Live Timer",
     description:
-      "Plan your 16:8 intermittent fasting schedule: enter your last meal time to get your exact fasting and eating window, what happens in your body hour by hour, and a live 16-hour timer.",
+      "Plan your 16:8 intermittent fasting schedule: enter your last meal time to get your exact fasting and eating window, body stages hour by hour and a live timer.",
     keywords: ["16 8 intermittent fasting", "16 8 fasting schedule", "16:8 fasting", "16 8 eating window", "16 hour fast", "16 8 fasting timer", "what to eat 16 8", "16 8 fasting for beginners"],
     h1: "16:8 Fasting Schedule",
     highlight: "Planner & Timer",
@@ -184,9 +210,9 @@ export const TOOLS: ToolPage[] = [
     nav: "Water Intake Calculator",
     tab: "water",
     protocol: "16:8",
-    title: "Water Intake Calculator – How Much Water Should I Drink a Day?",
+    title: "Water Intake Calculator – How Much Water to Drink a Day",
     description:
-      "Free daily water intake calculator: your hydration target from your weight and activity in litres, millilitres and 250 ml glasses, plus a Habit Garden that grows with every glass.",
+      "Free daily water intake calculator: your hydration target from your weight and activity in litres, ml and 250 ml glasses, plus a Habit Garden for every glass.",
     keywords: ["daily water intake calculator", "hydration calculator", "how much water should i drink", "water intake by weight", "water calculator", "daily water intake", "how many glasses of water a day"],
     h1: "Daily Water Intake Calculator",
     highlight: "& Habit Garden",
@@ -202,6 +228,105 @@ export const TOOLS: ToolPage[] = [
     },
     faq: [QA.water, QA.waterWeight, QA.plans, QA.bmi, QA.tdee, QA.privacy],
   },
+  // Extra landing pages: the same calculator preset for one popular search.
+  // They're linked from the main page's "Popular plans" list and the sitemap,
+  // not from the header or footer (NAV_TOOLS).
+  {
+    slug: "18-6-fasting-schedule",
+    nav: "18:6 Fasting Schedule",
+    tab: "fasting",
+    protocol: "18:6",
+    title: "18:6 Fasting Schedule – Eating Window Times & Live Timer",
+    description:
+      "Plan 18:6 intermittent fasting: enter your last meal time to get your exact 18-hour fast and 6-hour eating window, body stages hour by hour and a live timer.",
+    keywords: ["18 6 intermittent fasting", "18 6 fasting schedule", "18:6 fasting", "18 6 eating window", "18 hour fast", "18 6 fasting timer", "18 6 fasting results", "18 6 vs 16 8"],
+    h1: "18:6 Fasting Schedule",
+    highlight: "Planner & Timer",
+    intro:
+      "Fast for 18 hours and eat within 6. The 18:6 plan is already selected: set when your last meal ends to see when to break your fast and when your window closes, with the body stages along the way, then start the live 18-hour timer.",
+    guide: {
+      title: "A Simple 18:6 Day",
+      paragraphs: [
+        "A typical 18:6 day: finish dinner by 8 PM, sleep, drink water, black coffee or plain tea through the morning, and eat your first meal at 2 PM. Your eating window runs from 2 PM to 8 PM, which usually fits two meals.",
+        "18:6 keeps you past the 16-hour mark, when ketone levels start to rise, for two extra hours each day. It's a natural next step once 16:8 feels easy; jumping straight in often means a hungry, tired first week.",
+        "Because the window is short, make both meals count: protein, vegetables, whole grains and some healthy fat. Check your daily calorie target in the BMI & Calories tab so you eat enough, not as little as possible.",
+      ],
+    },
+    howTo: {
+      title: "How to Plan Your 18:6 Fast",
+      steps: [
+        { title: "Keep 18:6 selected", text: "The 18:6 plan (Deep Metabolic) is chosen for you. You can switch to 16:8 or 20:4 at any time." },
+        { title: "Set your last meal", text: "Enter the time your last meal ends, for example 8 PM, to see your fast and your 6-hour eating window." },
+        { title: "Check the body stages", text: "See when you reach each stage, including the 16-hour mark when mild ketosis begins." },
+        { title: "Start the live timer", text: "Tap Start to time your 18-hour fast. It keeps running even if you close the tab." },
+      ],
+    },
+    faq: [QA.eighteenSix, QA.eighteenSixResults, QA.stages, QA.breakFast, QA.whoShouldnt, QA.privacy],
+  },
+  {
+    slug: "20-4-fasting-schedule",
+    nav: "20:4 Fasting Schedule",
+    tab: "fasting",
+    protocol: "20:4",
+    title: "20:4 Fasting Schedule – Warrior Diet Eating Window & Timer",
+    description:
+      "Plan 20:4 intermittent fasting (the Warrior Diet): set your last meal to see your 20-hour fast and 4-hour eating window, body stages and a live fasting timer.",
+    keywords: ["20 4 intermittent fasting", "20 4 fasting schedule", "20:4 fasting", "warrior diet", "20 hour fast", "20 4 eating window", "20 4 fasting timer", "warrior diet schedule"],
+    h1: "20:4 Fasting Schedule",
+    highlight: "Warrior Diet Planner",
+    intro:
+      "Fast for 20 hours and eat within a 4-hour window. The 20:4 plan is already selected: set when your last meal ends to see when your fast breaks and your window closes, then time the fast with the live timer.",
+    guide: {
+      title: "Is 20:4 Right for You?",
+      paragraphs: [
+        "20:4 is one of the longest daily fasting plans: for example, eat between 4 PM and 8 PM and fast the other 20 hours. Fans like its simplicity, with one main meal and a smaller one, and the long stretch past the 16-hour mark.",
+        "It's an advanced plan. Most people do best building up from 16:8 to 18:6 first, and some use 20:4 only a few days a week. If you feel dizzy, weak or can't sleep, a longer window is the better choice.",
+        "Eating enough is the hard part of 20:4. Fit plenty of protein, vegetables, fruit, whole grains and healthy fats into your window, and use the BMI & Calories tab to see the daily calories you need.",
+      ],
+    },
+    howTo: {
+      title: "How to Plan Your 20:4 Fast",
+      steps: [
+        { title: "Keep 20:4 selected", text: "The 20:4 plan (Warrior) is chosen for you. Switch to 18:6 or 16:8 if a 4-hour window is too short." },
+        { title: "Set your last meal", text: "Enter the time your last meal ends to see when your 20-hour fast breaks and your 4-hour window closes." },
+        { title: "Plan your meals", text: "Fit one main meal and a smaller one into the window, and check your calorie target in the BMI & Calories tab." },
+        { title: "Start the live timer", text: "Tap Start to time your fast; complete it to grow your Habit Garden." },
+      ],
+    },
+    faq: [QA.twentyFour, QA.twentyFourMeals, QA.plans, QA.stages, QA.whoShouldnt, QA.privacy],
+  },
+  {
+    slug: "ideal-weight-calculator",
+    nav: "Ideal Weight Calculator",
+    tab: "body",
+    protocol: "16:8",
+    title: "Ideal Weight Calculator – Healthy Weight for Your Height",
+    description:
+      "Free ideal weight calculator: enter your height to see the healthy weight range for it (WHO BMI 18.5–24.9) in kg or lb, plus your BMI and daily calories.",
+    keywords: ["ideal weight calculator", "healthy weight for my height", "ideal body weight calculator", "how much should i weigh", "healthy weight range calculator", "ideal weight for height", "weight for height chart"],
+    h1: "Ideal Weight Calculator",
+    highlight: "for Your Height",
+    intro:
+      "How much should you weigh? Enter your height and weight, in metric or imperial, to see the healthy weight range for your height based on the WHO BMI categories, along with your current BMI and the calories you need each day.",
+    guide: {
+      title: "Why Your Ideal Weight Is a Range",
+      paragraphs: [
+        "There's no single perfect weight for a height. People with the same height differ in frame, muscle and where they carry weight, so JaxFit shows the full healthy range: every weight that gives a BMI between 18.5 and 24.9.",
+        "Anywhere inside that range is a healthy target. Many people aim for the middle; very active, muscular people may sit comfortably near the top, or even a little above it, while still being healthy.",
+        "Use the range as a guide, not a rule. Waist size, fitness, blood pressure and how you feel all matter. For under-18s, adult ranges don't apply, so JaxFit shows growth guidance instead.",
+      ],
+    },
+    howTo: {
+      title: "How to Find Your Ideal Weight",
+      steps: [
+        { title: "Choose your units", text: "Use kg and cm, or lb and feet and inches. Your details are saved on this device only." },
+        { title: "Enter your height and weight", text: "Add your age and sex too, so your daily calorie needs can be worked out." },
+        { title: "Read your healthy range", text: "See the healthy weight range for your height, your BMI and its WHO category." },
+        { title: "Set a goal if you like", text: "Enter a goal weight inside the range to get a safe calorie target and an estimated goal date." },
+      ],
+    },
+    faq: [QA.idealWeight, QA.healthyRange, QA.idealWeightGoal, QA.bmi, QA.safeDeficit, QA.privacy],
+  },
 ];
 
 /** The main page shows the intermittent fasting calculator (its canonical page). */
@@ -215,6 +340,9 @@ export const toolBySlug = (slug: string) => TOOLS.find((t) => t.slug === slug);
  */
 export const NAV_TOOLS = ["bmi-calculator", "16-8-fasting-schedule", "water-intake-calculator", "calorie-deficit-calculator"].map((slug) => toolBySlug(slug)!);
 
+/** The extra landing pages, listed only on the main page ("Popular plans"), on each other and in the sitemap. */
+export const POPULAR_TOOLS = ["18-6-fasting-schedule", "20-4-fasting-schedule", "ideal-weight-calculator"].map((slug) => toolBySlug(slug)!);
+
 /**
  * The page each calculator tab opens, so the headline, guide and FAQ always
  * match the open tab. (A page already on that tab, like the calorie deficit
@@ -225,6 +353,9 @@ export const TAB_PAGES: Record<TabId, string> = {
   fasting: "16-8-fasting-schedule",
   water: "water-intake-calculator",
 };
+
+/** A page's how-to title and steps: its own, or the shared ones. */
+export const howTo = (t: ToolPage) => t.howTo ?? { title: "How to Use the JaxFit Calculator", steps };
 
 export const steps = [
   { title: "Enter your details", text: "Height, weight, age and activity, in metric or imperial. They're saved on this device for next time." },

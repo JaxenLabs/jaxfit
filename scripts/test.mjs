@@ -10,6 +10,9 @@
  *   underweight, goal below a healthy BMI, the safe calorie minimum).
  * - Water: target in litres / ml / glasses, logging glasses, the Habit Garden.
  * - Theme toggle, saved details shared across pages, each page's SEO tags.
+ * - The extra landing pages (18:6, 20:4, ideal weight): presets, real
+ *   results, linked only from the main page; the sitemap, _headers and
+ *   the IndexNow key file.
  * It also fails on browser errors, requests to other servers or carrying data,
  * and if a company name or email appears.
  * Set CHROME_PATH to use a Chrome that is already installed.
@@ -28,7 +31,13 @@ const TOOLS = [
   { slug: "calorie-deficit-calculator", tab: "body", title: /^Calorie Deficit Calculator/ },
   { slug: "16-8-fasting-schedule", tab: "fasting", title: /^16:8 Fasting Schedule/ },
   { slug: "water-intake-calculator", tab: "water", title: /^Water Intake Calculator/ },
+  { slug: "18-6-fasting-schedule", tab: "fasting", title: /^18:6 Fasting Schedule/ },
+  { slug: "20-4-fasting-schedule", tab: "fasting", title: /^20:4 Fasting Schedule/ },
+  { slug: "ideal-weight-calculator", tab: "body", title: /^Ideal Weight Calculator/ },
 ];
+/** The extra landing pages: linked from the main page and the sitemap only, not the header or footer. */
+const POPULAR = ["18-6-fasting-schedule", "20-4-fasting-schedule", "ideal-weight-calculator"];
+const KEY = "845c2f16773504845be98e165b02af08";
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".ico": "image/x-icon", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml", ".webmanifest": "application/manifest+json" };
 
 // --- A tiny static server, like GitHub Pages ---------------------------------
@@ -265,13 +274,53 @@ await page.goto(url("16-8-fasting-schedule/"));
 await page.evaluate(() => localStorage.removeItem("jaxfit-fasting-v1"));
 await page.reload();
 check((await page.locator('[role="radio"][aria-checked="true"]').innerText()).includes("16:8"), "16:8 page opens on 16:8");
+
+console.log("Popular plans (extra landing pages)");
+for (const [slug, plan, opens, hours] of [
+  ["18-6-fasting-schedule", "18:6", "2:00 PM next day", "6 hours"],
+  ["20-4-fasting-schedule", "20:4", "4:00 PM next day", "4 hours"],
+]) {
+  await page.goto(url(`${slug}/`));
+  await page.evaluate(() => localStorage.removeItem("jaxfit-fasting-v1"));
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  const sched = await schedule();
+  check((await page.locator('[role="radio"][aria-checked="true"]').innerText()).includes(plan) && sched.includes("Fast begins 8:00 PM") && sched.includes(opens) && sched.includes(hours), `${slug}: opens on ${plan}, real schedule: ${sched}`);
+}
+await page.goto(url("ideal-weight-calculator/"));
+await page.waitForLoadState("networkidle");
+check((await page.locator("#tab-body").getAttribute("aria-selected")) === "true" && (await testId("healthy-range")) === "50.4 kg – 67.9 kg", `ideal weight page: BMI tab with the healthy range for the saved 5 ft 5 in, 165.1 cm (${await testId("healthy-range")})`);
+for (const slug of POPULAR) {
+  await page.goto(url(`${slug}/`));
+  const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').first().innerText());
+  const types = ld["@graph"].map((x) => x["@type"]);
+  const nav = await page.locator('header nav[aria-label="Calculators"] a').allInnerTexts();
+  check(
+    ["WebApplication", "FAQPage", "HowTo", "BreadcrumbList"].every((x) => types.includes(x)) &&
+      ld["@graph"].find((x) => x["@type"] === "HowTo").name !== "How to Use the JaxFit Calculator" &&
+      (await page.locator("h1").count()) === 1 &&
+      nav.join(",") === "BMI,16:8 Fasting Schedule,Water Intake,Calorie Deficit" &&
+      (await page.locator("footer nav a").count()) === 4,
+    `${slug}: own how-to, structured data, one H1, header and footer unchanged`,
+  );
+}
+await page.goto(url());
+for (const slug of POPULAR) check((await page.locator(`main a[href="/${slug}/"]`).count()) === 1 && (await page.locator(`header a[href="/${slug}/"], footer a[href="/${slug}/"]`).count()) === 0, `main page content links to /${slug}/ (not the header or footer)`);
+await page.goto(url("bmi-calculator/"));
+check((await page.locator(POPULAR.map((s) => `a[href="/${s}/"]`).join(", ")).count()) === 0, "other calculator pages don't link to the extra pages");
+await page.goto(url("16-8-fasting-schedule/"));
 // Footer link navigation (client-side).
 await page.locator("footer").getByRole("link", { name: "BMI Calculator" }).click();
 await page.waitForURL(url("bmi-calculator/"));
 check((await page.locator("h1").innerText()).startsWith("WHO BMI Calculator"), "footer link opens the BMI calculator");
 
 const sitemap = await (await fetch(url("sitemap.xml"))).text();
-check(TOOLS.every((t) => sitemap.includes(`.pages.dev/${t.slug}/`)), "sitemap lists the five pages");
+check(TOOLS.every((t) => sitemap.includes(`<loc>https://jaxfit.pages.dev/${t.slug}/</loc>`)) && (sitemap.match(/<loc>/g) ?? []).length === 8, "sitemap lists the eight calculator pages");
+for (const file of ["_headers", `${KEY}.txt`]) {
+  const r = await fetch(url(file));
+  const text = r.ok ? await r.text() : "";
+  check(file === "_headers" ? text.includes("/_next/static/*") : text === KEY, `out/${file} exists`);
+}
 const res404 = await fetch(url("nope/"));
 check(res404.status === 404, "unknown pages are 404");
 

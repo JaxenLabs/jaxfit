@@ -52,6 +52,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy out --project-name=${{ env.CLOUDFLARE_PROJECT }} --branch=${{ github.ref_name }} --commit-dirty=true
+      - name: Tell search engines about the pages (IndexNow)
+        if: github.ref_name == 'main'
+        continue-on-error: true
+        run: node scripts/indexnow.mjs out
       - name: Forwarding pages for the old GitHub Pages address
         if: github.ref_name == 'main'
         run: node scripts/github-redirects.mjs out github-pages "$CLOUDFLARE_URL" "$GITHUB_PAGES_FOLDER"

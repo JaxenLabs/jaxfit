@@ -1,12 +1,23 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/content/site";
-import { TOOLS } from "@/content/tools";
+import { DEFAULT_TOOL, TOOLS } from "@/content/tools";
 
 // Built once at build time (required for the static export).
 export const dynamic = "force-static";
 
-/** /sitemap.xml: the five calculator pages (the main page points to the fasting calculator as its canonical). */
+/** When the pages' content last changed (update it when you change the pages). */
+const UPDATED = "2026-11-15";
+
+/**
+ * /sitemap.xml: every calculator page. The main page shows the fasting
+ * calculator and points to it as its canonical, so that page is the top one
+ * and the main page itself isn't listed.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-  return TOOLS.map((t, i) => ({ url: `${SITE_URL}${t.slug}/`, lastModified: now, changeFrequency: "monthly" as const, priority: i === 0 ? 1 : 0.9 }));
+  return TOOLS.map((t) => ({
+    url: `${SITE_URL}${t.slug}/`,
+    lastModified: new Date(UPDATED),
+    changeFrequency: "monthly" as const,
+    priority: t === DEFAULT_TOOL ? 1 : 0.8,
+  }));
 }

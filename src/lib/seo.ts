@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TOOLS, steps, type ToolPage } from "@/content/tools";
+import { TOOLS, howTo, type ToolPage } from "@/content/tools";
 import { SITE_URL, abs, site } from "@/content/site";
 
 /** The address of a calculator page, e.g. https://…/jaxfit/bmi-calculator/. */
@@ -65,8 +65,8 @@ export function pageJsonLd(t: ToolPage) {
       {
         "@type": "HowTo",
         "@id": `${url}#how-to`,
-        name: "How to Use the JaxFit Calculator",
-        step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: s.text, url: `${url}#how-to` })),
+        name: howTo(t).title,
+        step: howTo(t).steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: s.text, url: `${url}#how-to` })),
       },
       {
         "@type": "BreadcrumbList",

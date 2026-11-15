@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { SITE_URL } from "@/content/site";
+
+export const metadata: Metadata = {
+  title: { absolute: "Page Not Found – JaxFit" },
+  description: "This page doesn't exist. Open JaxFit's free intermittent fasting, BMI, calorie deficit and water intake calculators.",
+  robots: { index: false, follow: true },
+};
 
 /** 404 page: points back to the calculators. */
 export default function NotFound() {
