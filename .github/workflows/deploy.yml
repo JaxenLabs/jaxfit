@@ -4,10 +4,6 @@
 # and published as a preview (https://develop.jaxfit.pages.dev).
 # Merging develop into main and pushing main publishes the live site.
 #
-# On main it also keeps the old GitHub Pages address working: it publishes
-# pages there that forward visitors and search engines to the same page on
-# Cloudflare (scripts/github-redirects.mjs).
-#
 # Needs two repository secrets: CLOUDFLARE_API_TOKEN (a Cloudflare API token
 # with Account > Cloudflare Pages > Edit) and CLOUDFLARE_ACCOUNT_ID.
 name: Deploy to Cloudflare Pages
@@ -19,8 +15,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
   deployments: write
 
 concurrency:
@@ -30,7 +24,6 @@ concurrency:
 env:
   CLOUDFLARE_PROJECT: jaxfit
   CLOUDFLARE_URL: https://jaxfit.pages.dev
-  GITHUB_PAGES_FOLDER: /jaxfit
 
 jobs:
   cloudflare:
@@ -56,21 +49,3 @@ jobs:
         if: github.ref_name == 'main'
         continue-on-error: true
         run: node scripts/indexnow.mjs out
-      - name: Forwarding pages for the old GitHub Pages address
-        if: github.ref_name == 'main'
-        run: node scripts/github-redirects.mjs out github-pages "$CLOUDFLARE_URL" "$GITHUB_PAGES_FOLDER"
-      - if: github.ref_name == 'main'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: github-pages
-
-  github-pages:
-    if: github.ref_name == 'main'
-    needs: cloudflare
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
