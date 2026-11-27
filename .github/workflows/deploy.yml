@@ -1,7 +1,7 @@
-# Publishes the site to Cloudflare Pages (https://jaxfit.pages.dev).
+# Publishes the site to Cloudflare Pages (https://jaxfast.pages.dev).
 #
 # Work happens on the develop branch: every push to develop is built, tested
-# and published as a preview (https://develop.jaxfit.pages.dev).
+# and published as a preview (https://develop.jaxfast.pages.dev).
 # Merging develop into main and pushing main publishes the live site.
 #
 # Needs two repository secrets: CLOUDFLARE_API_TOKEN (a Cloudflare API token
@@ -22,8 +22,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CLOUDFLARE_PROJECT: jaxfit
-  CLOUDFLARE_URL: https://jaxfit.pages.dev
+  CLOUDFLARE_PROJECT: jaxfast
+  CLOUDFLARE_URL: https://jaxfast.pages.dev
 
 jobs:
   cloudflare:

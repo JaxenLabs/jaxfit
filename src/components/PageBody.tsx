@@ -3,14 +3,14 @@ import { Faq } from "@/components/Faq";
 import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
 import { PageLink as Link } from "@/components/PageLink";
-import { JaxFitHub } from "@/components/hub/JaxFitHub";
+import { JaxFastHub } from "@/components/hub/JaxFastHub";
 import { NAV_TOOLS, POPULAR_TOOLS, disclaimer, howTo, privacyPoints, type ToolPage } from "@/content/tools";
 import { pageJsonLd } from "@/lib/seo";
 
 /**
  * The whole page, shared by every calculator page. The calculator comes
- * first (with the JaxFit app beside it on wide screens), then the two app
- * cards, then the guide, how-to, privacy, FAQ and links to the other calculators.
+ * first (with the JaxFast app beside it on wide screens), then the app
+ * section, then the guide, how-to, privacy, FAQ and links to the other calculators.
  * The main page (`home`) and the extra landing pages also list the popular
  * plans (POPULAR_TOOLS), which aren't in the header or footer.
  */
@@ -32,7 +32,7 @@ export function PageBody({ tool, home = false }: { tool: ToolPage; home?: boolea
             100% private: runs in your browser, nothing is uploaded
           </p>
           <div className="mt-6">
-            <JaxFitHub key={tool.slug} defaultTab={tool.tab} defaultProtocol={tool.protocol} />
+            <JaxFastHub key={tool.slug} defaultTab={tool.tab} defaultProtocol={tool.protocol} />
           </div>
           <p className="mt-4 text-xs leading-relaxed text-muted">{disclaimer}</p>
         </div>
@@ -94,7 +94,7 @@ export function PageBody({ tool, home = false }: { tool: ToolPage; home?: boolea
               ))}
               {!home && (
                 <li>
-                  <ToolLink href="/" label="All JaxFit calculators" />
+                  <ToolLink href="/" label="All JaxFast calculators" />
                 </li>
               )}
             </ul>
@@ -102,7 +102,7 @@ export function PageBody({ tool, home = false }: { tool: ToolPage; home?: boolea
         )}
 
         <nav aria-labelledby="more-title">
-          <SectionTitle id="more-title" eyebrow="More calculators" title="Free JaxFit Calculators" />
+          <SectionTitle id="more-title" eyebrow="More calculators" title="Free JaxFast Calculators" />
           <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {NAV_TOOLS.map((t) => (
               <li key={t.slug}>

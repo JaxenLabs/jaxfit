@@ -23,9 +23,6 @@ export const STAGES = [
   { from: 16, to: null, title: "Mild Ketosis & Cellular Renewal (Autophagy)", text: "Ketone levels rise. Research suggests autophagy, the body’s recycling of worn-out cell parts, steps up with longer fasts." },
 ] as const;
 
-/** The stage a fast is in after `hours` hours. */
-export const stageAt = (hours: number) => STAGES.findLastIndex((s) => hours >= s.from);
-
 export interface FastingSettings {
   protocol: ProtocolId | null;
   customHours: number;
@@ -83,33 +80,4 @@ export function fromInputTime(value: string): number | null {
   const h = Number(m[1]);
   const min = Number(m[2]);
   return h < 24 && min < 60 ? h * 60 + min : null;
-}
-
-/** A live fast: when it started (ms since 1970) and its goal in hours. */
-export interface FastTimer {
-  startedAt: number | null;
-  goalHours: number;
-}
-export const DEFAULT_TIMER: FastTimer = { startedAt: null, goalHours: 16 };
-
-export function readTimer(raw: unknown): FastTimer {
-  const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-  const started = typeof r.startedAt === "number" && Number.isFinite(r.startedAt) && r.startedAt > 0 ? r.startedAt : null;
-  const goal = typeof r.goalHours === "number" && r.goalHours >= CUSTOM_RANGE[0] && r.goalHours <= CUSTOM_RANGE[1] ? r.goalHours : DEFAULT_TIMER.goalHours;
-  return { startedAt: started, goalHours: goal };
-}
-
-/** The most recent time (ms) the clock showed `lastMeal`, at or before `now`. */
-export function lastMealBefore(now: Date, lastMeal: number) {
-  const d = new Date(now);
-  d.setHours(Math.floor(lastMeal / 60), lastMeal % 60, 0, 0);
-  if (d.getTime() > now.getTime()) d.setDate(d.getDate() - 1);
-  return d.getTime();
-}
-
-/** "15:04:09" */
-export function formatDuration(ms: number) {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
 }

@@ -4,7 +4,7 @@
  * Serves out/ at the site's basePath like GitHub Pages and opens it in
  * headless Chromium:
  * - Fasting: plan picker, last-meal time, schedule times, custom slider,
- *   body stages, the live timer (survives a reload, completes and grows the garden).
+ *   body stages, and the Start fast button (a JaxFast Google Play link, no browser timer).
  * - BMI & calories: BMI, WHO category, healthy range, BMR/TDEE, target and
  *   goal date, trend ranges, imperial units, and every safeguard (under 18,
  *   underweight, goal below a healthy BMI, the safe calorie minimum).
@@ -38,6 +38,10 @@ const TOOLS = [
 /** The extra landing pages: linked from the main page and the sitemap only, not the header or footer. */
 const POPULAR = ["18-6-fasting-schedule", "20-4-fasting-schedule", "ideal-weight-calculator"];
 const KEY = "845c2f16773504845be98e165b02af08";
+const SITE = "https://jaxfast.pages.dev";
+/** JaxFast on Google Play (the package name keeps the app's original "jaxfit" id), and a button's link with its install referrer. */
+const PLAY = "https://play.google.com/store/apps/details?id=com.jaxenlabs.jaxfit";
+const play = (placement) => `${PLAY}&referrer=utm_source%3Dweb_jaxfast_hub%26utm_content%3D${placement}`;
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".ico": "image/x-icon", ".woff2": "font/woff2", ".txt": "text/plain", ".xml": "application/xml", ".webmanifest": "application/manifest+json" };
 
 // --- A tiny static server, like GitHub Pages ---------------------------------
@@ -60,7 +64,8 @@ const url = (path = "") => `${origin}${BASE}/${path}`;
 
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
 const context = await browser.newContext();
-await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
+// Links that open Google Play are answered locally, so the test never reaches the real store.
+await context.route(/^https:\/\/play\.google\.com\//, (r) => r.fulfill({ status: 200, contentType: "text/html", body: "Google Play" }));
 const page = await context.newPage();
 
 // --- Checks ------------------------------------------------------------------
@@ -121,20 +126,22 @@ const stages = await panel("fasting").locator("ol li").allInnerTexts();
 check(stages.length === 4 && stages[3].includes("not reached on this plan") && stages[2].includes("from 6:30 AM next day"), "body stages with times; 16h+ not reached on a 13h fast");
 await page.getByRole("radio", { name: /16:8/ }).click();
 
-// Live timer: start, reload, then pretend it started 17 hours ago.
-await page.getByRole("button", { name: "Start Live Browser Timer" }).click();
-await page.waitForTimeout(1200);
-check(/^00:00:0[1-9]$/.test(await testId("timer-elapsed")), "timer counts");
-await page.reload();
-await page.waitForSelector('[data-testid="timer-elapsed"]');
-check((await testId("timer-elapsed")).startsWith("00:00:0"), "timer survives a reload");
-await page.evaluate(() => localStorage.setItem("jaxfit-timer-v1", JSON.stringify({ startedAt: Date.now() - 17 * 3600_000, goalHours: 16 })));
-await page.reload();
-await page.waitForSelector('[data-testid="timer-percent"]');
-check((await testId("timer-percent")) === "100%" && (await testId("timer-elapsed")).startsWith("17:00"), "17 hours into a 16h fast: 100%");
-check((await panel("fasting").innerText()).includes("Mild Ketosis & Cellular Renewal (Autophagy)"), "timer shows the current stage");
-await page.getByRole("button", { name: "Complete fast & grow my garden" }).click();
-check(await page.getByRole("button", { name: "Start Live Browser Timer" }).isVisible(), "completing a fast stops the timer");
+// Starting a fast opens JaxFast on Google Play instead of a browser timer.
+{
+  const start = panel("fasting").getByRole("link", { name: /^Start fast in JaxFast/ });
+  check((await start.count()) === 1 && (await start.getAttribute("href")) === play("start_fast"), "Start fast is a link to JaxFast on Google Play (placement start_fast)");
+  check((await start.getAttribute("target")) === "_blank" && (await start.getAttribute("rel")) === "noopener", "Start fast opens in a new tab with rel=noopener");
+  check(!(await panel("fasting").getByRole("button", { name: /start|timer/i }).count()), "no browser timer button on the fasting tab");
+  const [popup] = await Promise.all([context.waitForEvent("page"), start.click()]);
+  await popup.waitForURL(/play.google.com/).catch(() => {});
+  check(popup.url().startsWith(PLAY), `pressing Start fast opens Google Play (${popup.url().slice(0, 80)})`);
+  await popup.close();
+  await page.waitForTimeout(1200);
+  check(
+    !(await page.locator('[data-testid^="timer"]').count()) && (await page.evaluate(() => Object.keys(localStorage).every((k) => !k.includes("timer")))),
+    "pressing Start fast doesn't start a timer on the page",
+  );
+}
 
 // --- BMI & calories --------------------------------------------------------------------
 console.log("BMI & calories tab");
@@ -163,7 +170,7 @@ await fill("body", "Current weight", 72);
 await fill("body", "Age", 16);
 check((await panel("body").innerText()).includes("Growing bodies need fuel") && !(await panel("body").locator('[data-testid="target"]').count()), "under 18: no weight-loss targets");
 await tab("fasting");
-check((await panel("fasting").innerText()).includes("Fasting plans are for adults") && !(await page.getByRole("button", { name: "Start Live Browser Timer" }).count()), "under 18: no fasting plans or timer");
+check((await panel("fasting").innerText()).includes("Fasting plans are for adults") && !(await page.locator(`a[href="${play("start_fast")}"]`).count()), "under 18: no fasting plans or Start fast button");
 await tab("body");
 await fill("body", "Age", 70);
 await panel("body").getByRole("button", { name: "Male", exact: true }).click();
@@ -197,8 +204,9 @@ check((await testId("bmi")) === "26.4", "back to metric: same BMI");
 console.log("Water tab");
 await tab("water");
 check((await testId("water-litres")) === "2.65 L" && (await testId("water-detail")).startsWith("2,650 ml · 11 glasses"), "72 kg, lightly active: 2.65 L, 11 glasses");
-check((await testId("garden-level")) === "First sprout", "the completed fast already grew the garden");
+check((await testId("garden-level")) === "Thirsty seed", "the garden starts as a seed");
 await page.getByRole("button", { name: /Log a Glass of Water/ }).click();
+await page.getByRole("button", { name: /Complete Mini Fast/ }).click();
 await page.getByRole("button", { name: /I Cooked a Healthy Meal/ }).click();
 check((await panel("water").innerText()).includes("Today: 1 of 11 glasses") && (await testId("garden-level")) === "Seedling", "logging grows the garden");
 await page.reload();
@@ -214,13 +222,24 @@ await page.getByRole("button", { name: "Switch to light theme" }).click();
 check((await page.evaluate(() => document.documentElement.dataset.theme)) === "light", "light theme again");
 
 // --- Apps -------------------------------------------------------------------------------
-check(!(await page.locator('a[href*="play.google.com"]').count()), "no Google Play links while JaxFit is coming soon");
-check((await page.locator("#apps").innerText()).includes("Coming Soon on Google Play"), "JaxFit coming soon card");
-await page.getByRole("button", { name: "Bookmark This Page" }).click();
-await page.waitForTimeout(300);
-check((await page.locator("#apps [role=status]").innerText()).includes("Ctrl+D"), "bookmark button copies the link and shows the shortcut");
-check((await page.evaluate(() => navigator.clipboard.readText())) === page.url().split("#")[0], "bookmark copies this page's link");
+console.log("JaxFast app");
+{
+  const links = page.locator('a[href*="play.google.com"]');
+  const hrefs = await links.evaluateAll((as) => as.map((a) => [a.getAttribute("href"), a.target, a.rel]));
+  check(hrefs.length > 0 && hrefs.every(([h, t, r]) => h.startsWith(`${PLAY}&referrer=utm_source%3Dweb_jaxfast_hub%26utm_content%3D`) && t === "_blank" && r === "noopener"), `every Google Play link is JaxFast's, with the referrer, in a new tab (${hrefs.length})`);
+  for (const [where, placement] of [["header", "header"], ["#apps", "ecosystem"], ["#top", "results_water"], ["footer", "footer"]]) {
+    check((await page.locator(`${where} a[href="${play(placement)}"]`).count()) === 1, `Get it on Google Play in the ${where.replace("#", "")} (${placement})`);
+  }
+  check((await page.locator("#apps").innerText()).includes("Available on Google Play"), "app section says JaxFast is available");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const bar = page.locator(`a[href="${play("sticky_bar")}"]`);
+  const box = await bar.boundingBox();
+  check((await bar.isVisible()) && box && box.y + box.height <= 844 && box.y > 700, "phones: Google Play bar pinned to the bottom");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  check(!(await bar.isVisible()) && (await page.locator(`aside a[href="${play("hero")}"]`).isVisible()), "desktop: app card beside the calculator, no bottom bar");
+}
 const body = await page.locator("body").innerText();
+check(!/coming soon/i.test(body), 'no "coming soon" on the page');
 check(!/Jaxen ?Labs|JaxScan|JaxBudget|@[a-z0-9-]+\.[a-z]{2,}/i.test(body), "no company name, other apps or email on the page");
 
 // --- Pages & SEO ------------------------------------------------------------------------
@@ -254,7 +273,7 @@ console.log("Header menu");
 }
 
 console.log("Pages");
-check((await page.locator('link[rel="canonical"]').getAttribute("href")) === "https://jaxfit.pages.dev/bmi-calculator/", "main page canonical is the BMI calculator");
+check((await page.locator('link[rel="canonical"]').getAttribute("href")) === `${SITE}/bmi-calculator/`, "main page canonical is the BMI calculator");
 for (const t of TOOLS) {
   await page.goto(url(`${t.slug}/`));
   await page.waitForLoadState("networkidle");
@@ -265,7 +284,7 @@ for (const t of TOOLS) {
   const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
   check(
     t.title.test(title) &&
-      canonical === `https://jaxfit.pages.dev/${t.slug}/` &&
+      canonical === `${SITE}/${t.slug}/` &&
       (await page.locator(`#tab-${t.tab}`).getAttribute("aria-selected")) === "true" &&
       types.includes("WebApplication") &&
       faq.mainEntity.length === 6 &&
@@ -275,7 +294,7 @@ for (const t of TOOLS) {
   check((await page.locator('[data-testid="bmi"]').innerText()) === "26.4", `${t.slug}: saved details shared`);
 }
 await page.goto(url("16-8-fasting-schedule/"));
-await page.evaluate(() => localStorage.removeItem("jaxfit-fasting-v1"));
+await page.evaluate(() => localStorage.removeItem("jaxfast-fasting-v1"));
 await page.reload();
 check((await page.locator('[role="radio"][aria-checked="true"]').innerText()).includes("16:8"), "16:8 page opens on 16:8");
 
@@ -285,7 +304,7 @@ for (const [slug, plan, opens, hours] of [
   ["20-4-fasting-schedule", "20:4", "4:00 PM next day", "4 hours"],
 ]) {
   await page.goto(url(`${slug}/`));
-  await page.evaluate(() => localStorage.removeItem("jaxfit-fasting-v1"));
+  await page.evaluate(() => localStorage.removeItem("jaxfast-fasting-v1"));
   await page.reload();
   await page.waitForLoadState("networkidle");
   const sched = await schedule();
@@ -301,7 +320,7 @@ for (const slug of POPULAR) {
   const nav = await page.locator('header nav[aria-label="Calculators"] a').allInnerTexts();
   check(
     ["WebApplication", "FAQPage", "HowTo", "BreadcrumbList"].every((x) => types.includes(x)) &&
-      ld["@graph"].find((x) => x["@type"] === "HowTo").name !== "How to Use the JaxFit Calculator" &&
+      ld["@graph"].find((x) => x["@type"] === "HowTo").name !== "How to Use the JaxFast Calculator" &&
       (await page.locator("h1").count()) === 1 &&
       nav.join(",") === "BMI,16:8 Fasting Schedule,Water Intake,Calorie Deficit" &&
       (await page.locator("footer nav a").count()) === 4,
@@ -319,14 +338,43 @@ await page.waitForURL(url("bmi-calculator/"));
 check((await page.locator("h1").innerText()).startsWith("WHO BMI Calculator"), "footer link opens the BMI calculator");
 
 const sitemap = await (await fetch(url("sitemap.xml"))).text();
-check(TOOLS.every((t) => sitemap.includes(`<loc>https://jaxfit.pages.dev/${t.slug}/</loc>`)) && (sitemap.match(/<loc>/g) ?? []).length === 8, "sitemap lists the eight calculator pages");
-for (const file of ["_headers", `${KEY}.txt`]) {
+check(TOOLS.every((t) => sitemap.includes(`<loc>${SITE}/${t.slug}/</loc>`)) && (sitemap.match(/<loc>/g) ?? []).length === 8, "sitemap lists the eight calculator pages");
+for (const file of ["_headers", `${KEY}.txt`, "_redirects", "google88897a4d8dc2d04e.html"]) {
   const r = await fetch(url(file));
   const text = r.ok ? await r.text() : "";
-  check(file === "_headers" ? text.includes("/_next/static/*") : text === KEY, `out/${file} exists`);
+  const ok = { _headers: text.includes("/_next/static/*"), _redirects: text.includes("/google88897a4d8dc2d04e.html"), "google88897a4d8dc2d04e.html": text.includes("google88897a4d8dc2d04e") }[file] ?? text === KEY;
+  check(ok, `out/${file} exists`);
 }
 const res404 = await fetch(url("nope/"));
 check(res404.status === 404, "unknown pages are 404");
+
+console.log("Renamed to JaxFast");
+// Details saved under the old JaxFit keys are kept and moved to the new ones.
+await page.evaluate(() => {
+  localStorage.removeItem("jaxfast-garden-v1");
+  localStorage.setItem("jaxfit-garden-v1", JSON.stringify({ water: 4, fast: 1, meal: 2, todayWater: 0, day: "" }));
+});
+await page.goto(url("water-intake-calculator/"));
+await page.waitForLoadState("networkidle");
+check(
+  (await testId("garden-progress")).startsWith("7 healthy actions") && (await page.evaluate(() => localStorage.getItem("jaxfit-garden-v1") === null && localStorage.getItem("jaxfast-garden-v1") !== null)),
+  "a garden saved under the old key is moved to the new one",
+);
+// Every built page: the new name and address only ("jaxfit" survives only in the Play Store package name), and no other apps.
+{
+  const { readdir } = await import("node:fs/promises");
+  const pages = (await readdir(OUT, { recursive: true })).filter((f) => f.endsWith(".html") && !f.startsWith("google"));
+  const bad = [];
+  for (const f of pages) {
+    const html = (await readFile(join(OUT, f), "utf8")).replaceAll("com.jaxenlabs.jaxfit", "");
+    if (/jaxfit/i.test(html)) bad.push(`${f}: JaxFit`);
+    if (/coming soon/i.test(html)) bad.push(`${f}: coming soon`);
+    if (/JaxBudget|JaxScan|Jaxen ?Labs/i.test(html)) bad.push(`${f}: another app or the company`);
+    if (/halal/i.test(html)) bad.push(`${f}: halal claim`);
+    if (!html.includes(`${SITE}/`)) bad.push(`${f}: no ${SITE} address`);
+  }
+  check(pages.length >= 10 && !bad.length, `built pages use JaxFast and ${SITE} only (${pages.length} pages)${bad.length ? `: ${bad.join("; ")}` : ""}`);
+}
 
 await browser.close();
 server.close();

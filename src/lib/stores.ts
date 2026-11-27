@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { DEFAULT_FASTING, DEFAULT_TIMER, readFasting, readTimer, type FastTimer, type FastingSettings } from "./fit/fasting";
+import { DEFAULT_FASTING, readFasting, type FastingSettings } from "./fit/fasting";
 import { EMPTY_GARDEN, readGarden, type Garden } from "./fit/garden";
 import { DEFAULT_PROFILE, readProfile, type Profile } from "./fit/profile";
 
@@ -49,17 +49,27 @@ export function useNow(): Date | null {
 
 // --- localStorage-backed stores -------------------------------------------------
 /**
- * A value saved under `key`, validated by `read` when loaded (anything
- * missing or malformed falls back to defaults). Changes made in another tab
- * show up here too. Storage can be blocked (private mode): the page then
- * still works, and values last until it is closed.
+ * A value saved under "jaxfast-<name>", validated by `read` when loaded
+ * (anything missing or malformed falls back to defaults). Changes made in
+ * another tab show up here too. Storage can be blocked (private mode): the
+ * page then still works, and values last until it is closed.
+ *
+ * Values saved before the rename to JaxFast ("jaxfit-<name>") are moved to
+ * the new key the first time they're read, so returning visitors keep them.
  */
-function createStore<T>(key: string, read: (raw: unknown) => T, serverValue: T) {
+function createStore<T>(name: string, read: (raw: unknown) => T, serverValue: T) {
+  const key = `jaxfast-${name}`;
+  const oldKey = `jaxfit-${name}`;
   let cache: T | undefined;
   const listeners = new Set<() => void>();
   const load = () => {
     try {
-      return read(JSON.parse(localStorage.getItem(key) ?? "null"));
+      let saved = localStorage.getItem(key);
+      if (saved === null && (saved = localStorage.getItem(oldKey)) !== null) {
+        localStorage.setItem(key, saved);
+        localStorage.removeItem(oldKey);
+      }
+      return read(JSON.parse(saved ?? "null"));
     } catch {
       return read(null);
     }
@@ -97,10 +107,9 @@ function createStore<T>(key: string, read: (raw: unknown) => T, serverValue: T) 
   };
 }
 
-export const profileStore = createStore<Profile>("jaxfit-profile-v1", readProfile, DEFAULT_PROFILE);
-export const fastingStore = createStore<FastingSettings>("jaxfit-fasting-v1", readFasting, DEFAULT_FASTING);
-export const timerStore = createStore<FastTimer>("jaxfit-timer-v1", readTimer, DEFAULT_TIMER);
-export const gardenStore = createStore<Garden>("jaxfit-garden-v1", readGarden, EMPTY_GARDEN);
+export const profileStore = createStore<Profile>("profile-v1", readProfile, DEFAULT_PROFILE);
+export const fastingStore = createStore<FastingSettings>("fasting-v1", readFasting, DEFAULT_FASTING);
+export const gardenStore = createStore<Garden>("garden-v1", readGarden, EMPTY_GARDEN);
 
 /** Updates some fields of the profile. */
 export const updateProfile = (patch: Partial<Profile>) => profileStore.set({ ...profileStore.get(), ...patch });

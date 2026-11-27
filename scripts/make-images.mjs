@@ -1,6 +1,6 @@
 /**
- * Renders the site's icons and share image from the JaxFit logo
- * (public/images/jaxfit-logo.png, 512x512, also used by the web app manifest)
+ * Renders the site's icons and share image from the JaxFast logo
+ * (public/images/jaxfast-logo.png, 512x512, also used by the web app manifest)
  * with a headless browser:
  *   src/app/apple-icon.png       180x180  (iPhone home screen)
  *   src/app/icon1.png            192x192  (Google search results favicon: a multiple of 48px)
@@ -16,12 +16,12 @@ import { chromium } from "playwright";
 const SHARE = {
   title: "Intermittent Fasting Calculator",
   subtitle: "16:8 schedule · BMI · Calorie deficit · Water",
-  chips: ["100% private", "Live fasting timer", "Goal date", "Habit Garden"],
-  alt: "JaxFit: free intermittent fasting, BMI, calorie deficit and water intake calculators with a live fasting timer, 100% private",
+  chips: ["100% private", "Eating window", "Goal date", "Habit Garden"],
+  alt: "JaxFast: free intermittent fasting, BMI, calorie deficit and water intake calculators, 100% private",
 };
 
 const root = new URL("../", import.meta.url);
-const png = await readFile(new URL("public/images/jaxfit-logo.png", root));
+const png = await readFile(new URL("public/images/jaxfast-logo.png", root));
 const iconUrl = `data:image/png;base64,${png.toString("base64")}`;
 
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
@@ -61,7 +61,7 @@ const og = `
   background:radial-gradient(700px 420px at 100% 0%,rgba(16,185,129,.22),transparent 70%),radial-gradient(600px 400px at 0% 100%,rgba(217,119,6,.16),transparent 70%),#faf8f5">
   <div style="display:flex;align-items:center;gap:22px">
     <img src="${iconUrl}" width="96" height="96" style="border-radius:24px">
-    <div style="font-size:48px;font-weight:800">Jax<span style="color:#15803d">Fit</span></div>
+    <div style="font-size:48px;font-weight:800">Jax<span style="color:#15803d">Fast</span></div>
   </div>
   <div>
     <div style="font-size:74px;font-weight:800;line-height:1.05;letter-spacing:-1.5px">${SHARE.title}</div>

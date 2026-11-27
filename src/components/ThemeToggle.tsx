@@ -8,7 +8,7 @@ import { Icon } from "./Icon";
  * data-theme attribute on <html>, set before the page paints by the small
  * script in layout.tsx (so there's no flash) and remembered in localStorage.
  */
-export const THEME_KEY = "jaxfit-theme";
+export const THEME_KEY = "jaxfast-theme";
 const THEME_COLORS = { light: "#faf8f5", dark: "#0f1115" } as const;
 type Theme = keyof typeof THEME_COLORS;
 

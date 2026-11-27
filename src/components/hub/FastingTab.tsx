@@ -1,16 +1,17 @@
 "use client";
 
 import { useId } from "react";
+import { jaxfast } from "@/content/apps";
 import { CUSTOM_RANGE, PROTOCOLS, fastHours, formatTime, fromInputTime, schedule, toInputTime, type ClockTime, type ProtocolId } from "@/lib/fit/fasting";
 import { fastingStore } from "@/lib/stores";
+import { PlayLogo } from "../AppPromo";
 import { Icon } from "../Icon";
 import { FastingDial } from "./FastingDial";
-import { FastTimer } from "./FastTimer";
 import { Notice } from "./Notice";
 
 const when = (t: ClockTime) => `${formatTime(t.minutes)}${t.day ? " next day" : ""}`;
 
-/** Tab 1: fasting plan, daily schedule, body stages and the live timer. */
+/** Tab 1: fasting plan, daily schedule, body stages, and starting the fast in JaxFast. */
 export function FastingTab({ defaultProtocol, now, minor }: { defaultProtocol: ProtocolId; now: Date | null; minor: boolean }) {
   const f = fastingStore.use();
   const protocol = f.protocol ?? defaultProtocol;
@@ -23,7 +24,7 @@ export function FastingTab({ defaultProtocol, now, minor }: { defaultProtocol: P
   if (minor) {
     return (
       <Notice tone="amber" title="Fasting plans are for adults">
-        You entered an age under 18. Growing bodies need regular, balanced meals, so JaxFit doesn&rsquo;t offer fasting schedules or timers for teens. A normal overnight
+        You entered an age under 18. Growing bodies need regular, balanced meals, so JaxFast doesn&rsquo;t offer fasting schedules for teens. A normal overnight
         break between dinner and breakfast is all you need. If you have questions about food or weight, a parent, school nurse or doctor can help.
       </Notice>
     );
@@ -121,7 +122,39 @@ export function FastingTab({ defaultProtocol, now, minor }: { defaultProtocol: P
         <p className="mt-2 text-xs text-muted">Timings are typical averages and vary with your last meal, activity and metabolism.</p>
       </div>
 
-      <FastTimer now={now} goalHours={hours} lastMeal={f.lastMeal} />
+      <StartFast hours={hours} />
+    </div>
+  );
+}
+
+/** Starting the fast happens in the JaxFast app: the button is a link to it on Google Play. */
+function StartFast({ hours }: { hours: number }) {
+  return (
+    <div className="flex flex-col gap-4 rounded-3xl bg-amber-soft p-5 sm:flex-row sm:items-center">
+      <div className="min-w-0 flex-1">
+        <p className="font-extrabold">Ready to start your {hours}-hour fast?</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted">
+          Your fast continues in the {jaxfast.name} app, with a live dial through six body stages. Offline, no account, no ads.
+        </p>
+      </div>
+      <div className="flex flex-col gap-1.5 sm:items-end">
+        <a
+          href={jaxfast.play("start_fast")}
+          target="_blank"
+          rel="noopener"
+          data-testid="start-fast"
+          aria-describedby="start-fast-note"
+          className="btn-primary inline-flex h-12 items-center justify-center gap-2.5 rounded-2xl pr-5 pl-2.5 font-bold whitespace-nowrap"
+        >
+          <span className="grid size-8 place-items-center rounded-xl bg-white">
+            <PlayLogo className="size-4" />
+          </span>
+          Start fast in {jaxfast.name}
+        </a>
+        <p id="start-fast-note" className="text-center text-xs font-semibold text-muted sm:text-right">
+          Opens {jaxfast.name} on Google Play
+        </p>
+      </div>
     </div>
   );
 }

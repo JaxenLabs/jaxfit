@@ -8,14 +8,14 @@
  * to change.
  */
 export const site = {
-  name: "JaxFit",
-  brandName: "JaxFit — Intermittent Fasting, Weight Loss & Healthy BMI Blueprint",
+  name: "JaxFast",
+  brandName: "JaxFast — Intermittent Fasting, Weight Loss & Healthy BMI Blueprint",
   /** Where the site is served from (no trailing slash): its Cloudflare Pages address. */
-  origin: "https://jaxfit.pages.dev",
+  origin: "https://jaxfast.pages.dev",
   /** The folder the site lives in on that origin ("" = the root). */
   basePath: "",
   /** Shown as author and publisher; `logoPath` is inside this site. */
-  publisher: { name: "JaxFit", logoPath: "/images/jaxfit-logo.png" },
+  publisher: { name: "JaxFast", logoPath: "/images/jaxfast-logo.png" },
   /** Short line for the share card, app manifest and footer. */
   tagline: "Free intermittent fasting, BMI, calorie deficit and water intake calculators that run privately in your browser.",
 } as const;

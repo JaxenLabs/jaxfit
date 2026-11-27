@@ -81,7 +81,7 @@ export function BodyTab({ profile: p, now }: { profile: Profile; now: Date | nul
       {result.kind === "minor" ? (
         <Notice tone="amber" title="Growing bodies need fuel, not restriction">
           You entered an age under 18. Adult BMI categories don&rsquo;t apply to teens: doctors use growth charts for age and sex instead. Because your body is still
-          growing, JaxFit doesn&rsquo;t show calorie-deficit or weight-loss targets. Focus on regular, balanced meals, plenty of water, sleep and activity you enjoy,
+          growing, JaxFast doesn&rsquo;t show calorie-deficit or weight-loss targets. Focus on regular, balanced meals, plenty of water, sleep and activity you enjoy,
           and talk to a doctor or school nurse if you have questions about your weight.
         </Notice>
       ) : (
@@ -114,7 +114,7 @@ function Result({ result, p, now }: { result: Exclude<ReturnType<typeof plan>, {
     case "underweight":
       return (
         <Notice tone="amber" title="Let’s focus on nourishment, not a deficit">
-          Your BMI is below 18.5, which the WHO classes as underweight, so JaxFit won&rsquo;t suggest a calorie deficit or fasting for weight loss. Eating at least your
+          Your BMI is below 18.5, which the WHO classes as underweight, so JaxFast won&rsquo;t suggest a calorie deficit or fasting for weight loss. Eating at least your
           maintenance calories ({kcal(tdee(p, p.weightKg))} a day) with plenty of protein supports your energy and health. A doctor or dietitian can help you find the
           right plan for you.
         </Notice>
@@ -122,7 +122,7 @@ function Result({ result, p, now }: { result: Exclude<ReturnType<typeof plan>, {
     case "lowGoal":
       return (
         <Notice tone="amber" title="Your goal is below a healthy weight for your height">
-          A goal of {formatWeight(p.goalKg, p.units)} would put your BMI under 18.5. To protect your health, JaxFit only plans towards goals within your healthy range.
+          A goal of {formatWeight(p.goalKg, p.units)} would put your BMI under 18.5. To protect your health, JaxFast only plans towards goals within your healthy range.
           <button type="button" onClick={() => updateProfile({ goalKg: Math.ceil(result.minHealthyKg * 10) / 10 })} className="btn-primary mt-3 flex h-11 items-center rounded-2xl px-4 text-sm font-bold">
             Use {formatWeight(Math.ceil(result.minHealthyKg * 10) / 10, p.units)} as my goal
           </button>
@@ -137,7 +137,7 @@ function Result({ result, p, now }: { result: Exclude<ReturnType<typeof plan>, {
     case "atFloor":
       return (
         <Notice tone="info" title="Your maintenance calories are already close to the safe minimum">
-          A deficit would take you below {kcal(result.floor)} a day, the lowest intake JaxFit suggests without medical supervision. Adding daily movement, such as a brisk
+          A deficit would take you below {kcal(result.floor)} a day, the lowest intake JaxFast suggests without medical supervision. Adding daily movement, such as a brisk
           30-minute walk, raises the calories you use instead. A doctor or dietitian can tailor a plan for you.
         </Notice>
       );

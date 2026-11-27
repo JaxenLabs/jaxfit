@@ -33,11 +33,11 @@ const QA = {
   },
   water: {
     q: "How much water should I drink a day?",
-    a: "A common guideline is 30–35 ml of water for every kilogram you weigh, plus extra when you are active, sweat a lot or the weather is hot. With JaxFit's activity extra, a 70 kg adult who is lightly active needs roughly 2.4 to 2.75 litres a day, about 11 glasses of 250 ml. Food provides some of your water too. Pale yellow urine is a simple sign you are drinking enough. If you have a heart or kidney condition, follow your doctor's fluid advice instead.",
+    a: "A common guideline is 30–35 ml of water for every kilogram you weigh, plus extra when you are active, sweat a lot or the weather is hot. With JaxFast's activity extra, a 70 kg adult who is lightly active needs roughly 2.4 to 2.75 litres a day, about 11 glasses of 250 ml. Food provides some of your water too. Pale yellow urine is a simple sign you are drinking enough. If you have a heart or kidney condition, follow your doctor's fluid advice instead.",
   },
   privacy: {
-    q: "Is my health data private on JaxFit?",
-    a: "Yes. Every calculation runs in your own browser. Your age, weight, goals, fasting timer and Habit Garden are saved only in your browser's local storage on this device, so they're there when you come back. Nothing is uploaded, there are no accounts, no analytics cookies, no tracking scripts and no ads. Clearing your browser data removes everything.",
+    q: "Is my health data private on JaxFast?",
+    a: "Yes. Every calculation runs in your own browser. Your age, weight, goals, fasting plan and Habit Garden are saved only in your browser's local storage on this device, so they're there when you come back. Nothing is uploaded, there are no accounts, no analytics cookies, no tracking scripts and no ads. Clearing your browser data removes everything.",
   },
   goalDate: {
     q: "How is my goal date estimated?",
@@ -45,7 +45,7 @@ const QA = {
   },
   safeDeficit: {
     q: "What is a safe calorie deficit for weight loss?",
-    a: "For most adults a deficit of 250–500 kcal a day, losing roughly 0.25–0.5 kg (0.5–1 lb) a week, is sustainable and protects muscle. Larger deficits can be used for a short time by people with more weight to lose, but very low intakes leave little room for protein, vitamins and minerals. That's why JaxFit never suggests going below 1,200 kcal a day for women or 1,500 kcal for men, and doesn't offer weight-loss targets to under-18s or anyone underweight.",
+    a: "For most adults a deficit of 250–500 kcal a day, losing roughly 0.25–0.5 kg (0.5–1 lb) a week, is sustainable and protects muscle. Larger deficits can be used for a short time by people with more weight to lose, but very low intakes leave little room for protein, vitamins and minerals. That's why JaxFast never suggests going below 1,200 kcal a day for women or 1,500 kcal for men, and doesn't offer weight-loss targets to under-18s or anyone underweight.",
   },
   sixteenEight: {
     q: "How do I start a 16:8 fasting schedule?",
@@ -85,11 +85,11 @@ const QA = {
   },
   idealWeight: {
     q: "How is my ideal weight calculated?",
-    a: "JaxFit uses the World Health Organization's healthy BMI range: every weight that gives a BMI between 18.5 and 24.9 at your height is a healthy weight. For example, at 165 cm (5 ft 5 in) that's about 50.4 to 67.8 kg (111 to 149 lb). Older formulas such as Devine or Robinson give a single number, but a range is more realistic, because frame, muscle and age all differ.",
+    a: "JaxFast uses the World Health Organization's healthy BMI range: every weight that gives a BMI between 18.5 and 24.9 at your height is a healthy weight. For example, at 165 cm (5 ft 5 in) that's about 50.4 to 67.8 kg (111 to 149 lb). Older formulas such as Devine or Robinson give a single number, but a range is more realistic, because frame, muscle and age all differ.",
   },
   idealWeightGoal: {
     q: "How should I choose a goal weight?",
-    a: "Pick a weight inside your healthy range that you can reach and keep without extreme dieting. If you have a lot to lose, a first goal of 5–10% of your current weight already brings real health benefits. Enter it as your goal in the BMI & Calories tab to see a safe daily calorie target and an estimated goal date. JaxFit won't plan towards a goal below a healthy BMI.",
+    a: "Pick a weight inside your healthy range that you can reach and keep without extreme dieting. If you have a lot to lose, a first goal of 5–10% of your current weight already brings real health benefits. Enter it as your goal in the BMI & Calories tab to see a safe daily calorie target and an estimated goal date. JaxFast won't plan towards a goal below a healthy BMI.",
   },
 } satisfies Record<string, Qa>;
 
@@ -118,14 +118,14 @@ export const TOOLS: ToolPage[] = [
     nav: "Fasting Calculator",
     tab: "fasting",
     protocol: "16:8",
-    title: "Intermittent Fasting Calculator – 16:8 Schedule & Timer",
+    title: "Intermittent Fasting Calculator – 16:8 Schedule & Eating Window",
     description:
-      "Free intermittent fasting calculator: plan 14:10, 16:8, 18:6, 20:4 or 24h fasts, see your eating window and body stages, and run a live fasting timer.",
+      "Free intermittent fasting calculator: plan 14:10, 16:8, 18:6, 20:4 or 24h fasts, see your eating window and body stages hour by hour, then start your fast in JaxFast.",
     keywords: ["intermittent fasting calculator", "fasting window calculator", "16 8 fasting schedule", "fasting timer", "intermittent fasting schedule", "autophagy timeline", "18 6 fasting", "20 4 fasting"],
     h1: "Intermittent Fasting Calculator",
-    highlight: "& Live Fasting Timer",
+    highlight: "& Eating Window Planner",
     intro:
-      "Choose a fasting plan and the time of your last meal to see exactly when your fast begins, when to break it and when your eating window closes, with the body stages you pass through hour by hour. Then start a live timer that keeps running even if you close the tab.",
+      "Choose a fasting plan and the time of your last meal to see exactly when your fast begins, when to break it and when your eating window closes, with the body stages you pass through hour by hour. When you're ready, start the fast in the JaxFast app with its live body-stage dial.",
     guide: {
       title: "How to Choose the Right Fasting Plan",
       paragraphs: [
@@ -154,7 +154,7 @@ export const TOOLS: ToolPage[] = [
       paragraphs: [
         "BMI compares your weight with your height: weight in kilograms divided by height in metres squared. The World Health Organization uses it to screen adults: under 18.5 is underweight, 18.5–24.9 is a healthy weight, 25–29.9 is overweight and 30 or more is obesity.",
         "BMI is a starting point, not a verdict. It can't tell muscle from fat, so athletes may read as overweight, and it doesn't show where fat is stored. Waist size, blood pressure, activity and how you feel matter too.",
-        "Your healthy weight range is every weight that gives a BMI between 18.5 and 24.9 at your height. Any goal inside it is a healthy one. JaxFit won't plan weight loss below that range, and for under-18s it shows growth guidance instead of adult categories.",
+        "Your healthy weight range is every weight that gives a BMI between 18.5 and 24.9 at your height. Any goal inside it is a healthy one. JaxFast won't plan weight loss below that range, and for under-18s it shows growth guidance instead of adult categories.",
       ],
     },
     faq: [QA.bmi, QA.healthyRange, QA.tdee, QA.safeDeficit, QA.plans, QA.privacy],
@@ -176,7 +176,7 @@ export const TOOLS: ToolPage[] = [
       title: "How a Calorie Deficit Works",
       paragraphs: [
         "Your body uses a certain amount of energy each day: your TDEE. Eat less than that and it makes up the difference from stored energy, mostly fat. About 7,700 kcal equals one kilogram of body fat, so a 500 kcal daily deficit works out to roughly 0.45 kg (1 lb) a week.",
-        "A moderate deficit is easier to keep up and protects muscle. As you lose weight your TDEE falls a little too, which is why progress naturally slows near your goal; JaxFit's projection accounts for that by recalculating every day.",
+        "A moderate deficit is easier to keep up and protects muscle. As you lose weight your TDEE falls a little too, which is why progress naturally slows near your goal; JaxFast's projection accounts for that by recalculating every day.",
         "Safety comes first: targets never go below 1,200 kcal a day for women or 1,500 kcal for men, and weight-loss plans aren't offered to under-18s, to anyone underweight, or towards a goal below a healthy BMI.",
       ],
     },
@@ -187,14 +187,14 @@ export const TOOLS: ToolPage[] = [
     nav: "16:8 Fasting Schedule",
     tab: "fasting",
     protocol: "16:8",
-    title: "16:8 Fasting Schedule – Eating Window Times & Live Timer",
+    title: "16:8 Fasting Schedule – Eating Window Times & Body Stages",
     description:
-      "Plan your 16:8 intermittent fasting schedule: enter your last meal time to get your exact fasting and eating window, body stages hour by hour and a live timer.",
+      "Plan your 16:8 intermittent fasting schedule: enter your last meal time to get your exact fasting and eating window and the body stages hour by hour, free and private.",
     keywords: ["16 8 intermittent fasting", "16 8 fasting schedule", "16:8 fasting", "16 8 eating window", "16 hour fast", "16 8 fasting timer", "what to eat 16 8", "16 8 fasting for beginners"],
     h1: "16:8 Fasting Schedule",
-    highlight: "Planner & Timer",
+    highlight: "& Eating Window",
     intro:
-      "Fast for 16 hours and eat within 8: set the time your last meal ends and see when to break your fast, when your eating window closes and the body stages along the way. Start the live 16-hour timer when you're ready.",
+      "Fast for 16 hours and eat within 8: set the time your last meal ends and see when to break your fast, when your eating window closes and the body stages along the way. When you're ready, start the 16-hour fast in the JaxFast app.",
     guide: {
       title: "A Simple 16:8 Day",
       paragraphs: [
@@ -221,7 +221,7 @@ export const TOOLS: ToolPage[] = [
     guide: {
       title: "How Much Water Do You Really Need?",
       paragraphs: [
-        "A practical guide is 30–35 ml of water per kilogram of body weight each day, plus more when you exercise or sweat. JaxFit adds 300 ml to 1 litre depending on your activity level and shows the result in litres, millilitres and 250 ml glasses.",
+        "A practical guide is 30–35 ml of water per kilogram of body weight each day, plus more when you exercise or sweat. JaxFast adds 300 ml to 1 litre depending on your activity level and shows the result in litres, millilitres and 250 ml glasses.",
         "Spread your water through the day rather than drinking it all at once: a glass when you wake, one with each meal and one around exercise covers much of it. During a fast, water also helps with hunger, which can feel a lot like thirst.",
         "Needs go up in hot weather, at altitude, when you're ill with fever, or while breastfeeding. Some heart and kidney conditions need less fluid, so follow your doctor's advice if that applies to you.",
       ],
@@ -236,14 +236,14 @@ export const TOOLS: ToolPage[] = [
     nav: "18:6 Fasting Schedule",
     tab: "fasting",
     protocol: "18:6",
-    title: "18:6 Fasting Schedule – Eating Window Times & Live Timer",
+    title: "18:6 Fasting Schedule – Eating Window Times & Body Stages",
     description:
-      "Plan 18:6 intermittent fasting: enter your last meal time to get your exact 18-hour fast and 6-hour eating window, body stages hour by hour and a live timer.",
+      "Plan 18:6 intermittent fasting: enter your last meal time to get your exact 18-hour fast and 6-hour eating window and the body stages hour by hour.",
     keywords: ["18 6 intermittent fasting", "18 6 fasting schedule", "18:6 fasting", "18 6 eating window", "18 hour fast", "18 6 fasting timer", "18 6 fasting results", "18 6 vs 16 8"],
     h1: "18:6 Fasting Schedule",
-    highlight: "Planner & Timer",
+    highlight: "& Eating Window",
     intro:
-      "Fast for 18 hours and eat within 6. The 18:6 plan is already selected: set when your last meal ends to see when to break your fast and when your window closes, with the body stages along the way, then start the live 18-hour timer.",
+      "Fast for 18 hours and eat within 6. The 18:6 plan is already selected: set when your last meal ends to see when to break your fast and when your window closes, with the body stages along the way, then start the 18-hour fast in the JaxFast app.",
     guide: {
       title: "A Simple 18:6 Day",
       paragraphs: [
@@ -258,7 +258,7 @@ export const TOOLS: ToolPage[] = [
         { title: "Keep 18:6 selected", text: "The 18:6 plan (Deep Metabolic) is chosen for you. You can switch to 16:8 or 20:4 at any time." },
         { title: "Set your last meal", text: "Enter the time your last meal ends, for example 8 PM, to see your fast and your 6-hour eating window." },
         { title: "Check the body stages", text: "See when you reach each stage, including the 16-hour mark when mild ketosis begins." },
-        { title: "Start the live timer", text: "Tap Start to time your 18-hour fast. It keeps running even if you close the tab." },
+        { title: "Start your fast in JaxFast", text: "Tap Start fast in JaxFast to time your 18-hour fast in the app, with a live dial through the body stages." },
       ],
     },
     faq: [QA.eighteenSix, QA.eighteenSixResults, QA.stages, QA.breakFast, QA.whoShouldnt, QA.privacy],
@@ -268,14 +268,14 @@ export const TOOLS: ToolPage[] = [
     nav: "20:4 Fasting Schedule",
     tab: "fasting",
     protocol: "20:4",
-    title: "20:4 Fasting Schedule – Warrior Diet Eating Window & Timer",
+    title: "20:4 Fasting Schedule – Warrior Diet Eating Window Planner",
     description:
-      "Plan 20:4 intermittent fasting (the Warrior Diet): set your last meal to see your 20-hour fast and 4-hour eating window, body stages and a live fasting timer.",
+      "Plan 20:4 intermittent fasting (the Warrior Diet): set your last meal to see your 20-hour fast and 4-hour eating window and the body stages along the way.",
     keywords: ["20 4 intermittent fasting", "20 4 fasting schedule", "20:4 fasting", "warrior diet", "20 hour fast", "20 4 eating window", "20 4 fasting timer", "warrior diet schedule"],
     h1: "20:4 Fasting Schedule",
     highlight: "Warrior Diet Planner",
     intro:
-      "Fast for 20 hours and eat within a 4-hour window. The 20:4 plan is already selected: set when your last meal ends to see when your fast breaks and your window closes, then time the fast with the live timer.",
+      "Fast for 20 hours and eat within a 4-hour window. The 20:4 plan is already selected: set when your last meal ends to see when your fast breaks and your window closes, then start the fast in the JaxFast app.",
     guide: {
       title: "Is 20:4 Right for You?",
       paragraphs: [
@@ -290,7 +290,7 @@ export const TOOLS: ToolPage[] = [
         { title: "Keep 20:4 selected", text: "The 20:4 plan (Warrior) is chosen for you. Switch to 18:6 or 16:8 if a 4-hour window is too short." },
         { title: "Set your last meal", text: "Enter the time your last meal ends to see when your 20-hour fast breaks and your 4-hour window closes." },
         { title: "Plan your meals", text: "Fit one main meal and a smaller one into the window, and check your calorie target in the BMI & Calories tab." },
-        { title: "Start the live timer", text: "Tap Start to time your fast; complete it to grow your Habit Garden." },
+        { title: "Start your fast in JaxFast", text: "Tap Start fast in JaxFast to time your 20-hour fast in the app, offline and private." },
       ],
     },
     faq: [QA.twentyFour, QA.twentyFourMeals, QA.plans, QA.stages, QA.whoShouldnt, QA.privacy],
@@ -311,9 +311,9 @@ export const TOOLS: ToolPage[] = [
     guide: {
       title: "Why Your Ideal Weight Is a Range",
       paragraphs: [
-        "There's no single perfect weight for a height. People with the same height differ in frame, muscle and where they carry weight, so JaxFit shows the full healthy range: every weight that gives a BMI between 18.5 and 24.9.",
+        "There's no single perfect weight for a height. People with the same height differ in frame, muscle and where they carry weight, so JaxFast shows the full healthy range: every weight that gives a BMI between 18.5 and 24.9.",
         "Anywhere inside that range is a healthy target. Many people aim for the middle; very active, muscular people may sit comfortably near the top, or even a little above it, while still being healthy.",
-        "Use the range as a guide, not a rule. Waist size, fitness, blood pressure and how you feel all matter. For under-18s, adult ranges don't apply, so JaxFit shows growth guidance instead.",
+        "Use the range as a guide, not a rule. Waist size, fitness, blood pressure and how you feel all matter. For under-18s, adult ranges don't apply, so JaxFast shows growth guidance instead.",
       ],
     },
     howTo: {
@@ -356,20 +356,20 @@ export const TAB_PAGES: Record<TabId, string> = {
 };
 
 /** A page's how-to title and steps: its own, or the shared ones. */
-export const howTo = (t: ToolPage) => t.howTo ?? { title: "How to Use the JaxFit Calculator", steps };
+export const howTo = (t: ToolPage) => t.howTo ?? { title: "How to Use the JaxFast Calculator", steps };
 
 export const steps = [
   { title: "Enter your details", text: "Height, weight, age and activity, in metric or imperial. They're saved on this device for next time." },
   { title: "Plan your fasting window", text: "Pick 14:10, 16:8, 18:6, 20:4, 24h or your own plan and the time your last meal ends." },
   { title: "Check your numbers", text: "See your WHO BMI, healthy weight range, safe calorie target, goal date and daily water." },
-  { title: "Grow your Habit Garden", text: "Start the live fasting timer, log water and healthy meals, and watch your plant flourish." },
+  { title: "Grow your Habit Garden", text: "Log water, fasts and healthy meals in the Water tab, and watch your plant flourish." },
 ];
 
 export const privacyPoints = [
   "Every calculation runs in your browser. Nothing you enter is uploaded or sent anywhere.",
   "No accounts, no analytics cookies, no tracking scripts and no ads.",
-  "Your details, timer and garden are saved only on this device. Clearing your browser data removes them.",
+  "Your details, fasting plan and garden are saved only on this device. Clearing your browser data removes them.",
 ];
 
 export const disclaimer =
-  "JaxFit gives general wellness information, not medical advice. Talk to a doctor before fasting or changing your diet if you are pregnant or breastfeeding, have diabetes or another medical condition, take regular medication, or have a history of eating disorders.";
+  "JaxFast gives general wellness information, not medical advice. Talk to a doctor before fasting or changing your diet if you are pregnant or breastfeeding, have diabetes or another medical condition, take regular medication, or have a history of eating disorders.";

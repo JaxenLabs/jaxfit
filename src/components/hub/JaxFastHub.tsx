@@ -5,14 +5,15 @@ import { useState } from "react";
 import { TAB_PAGES, type TabId } from "@/content/tools";
 import type { ProtocolId } from "@/lib/fit/fasting";
 import { profileStore, useNow } from "@/lib/stores";
+import { ResultsCta } from "../AppPromo";
 import { BodyTab } from "./BodyTab";
 import { FastingTab } from "./FastingTab";
 import { WaterTab } from "./WaterTab";
 
 const TABS = [
-  { id: "body", short: "BMI & Calories", label: "BMI, TDEE & Goal Date" },
-  { id: "fasting", short: "Fasting", label: "Intermittent Fasting" },
-  { id: "water", short: "Water", label: "Water Intake Tracker" },
+  { id: "body", short: "BMI & Calories", label: "BMI, TDEE & Goal Date", cta: "Track your weight and BMI over time, with recipes and meal plans, in the JaxFast app." },
+  { id: "fasting", short: "Fasting", label: "Intermittent Fasting", cta: null },
+  { id: "water", short: "Water", label: "Water Intake Tracker", cta: "Log your water and grow your Habit Garden offline in the JaxFast app." },
 ] as const;
 
 /**
@@ -23,14 +24,16 @@ const TABS = [
  * Each page opens on its own tab (`defaultTab`). Picking another tab opens
  * that tab's page (TAB_PAGES), so the headline above and the guide and FAQ
  * below always match; the tab switches at once and the page follows without
- * a reload or a jump in scroll position. Details, the fasting timer and the
+ * a reload or a jump in scroll position. Details, the fasting plan and the
  * garden carry over, since they are saved on the device.
  */
-export function JaxFitHub({ defaultTab, defaultProtocol }: { defaultTab: TabId; defaultProtocol: ProtocolId }) {
+export function JaxFastHub({ defaultTab, defaultProtocol }: { defaultTab: TabId; defaultProtocol: ProtocolId }) {
   const router = useRouter();
   const [tab, setTab] = useState<TabId>(defaultTab);
   const profile = profileStore.use();
   const now = useNow();
+  // The fasting tab's own Start button opens the app; under-18s aren't offered weight tracking.
+  const cta = tab === "body" && profile.age < 18 ? null : TABS.find((t) => t.id === tab)!.cta;
 
   const pick = (id: TabId) => {
     setTab(id);
@@ -66,6 +69,7 @@ export function JaxFitHub({ defaultTab, defaultProtocol }: { defaultTab: TabId; 
         <div id="panel-water" role="tabpanel" aria-labelledby="tab-water" hidden={tab !== "water"}>
           <WaterTab profile={profile} now={now} />
         </div>
+        {cta && <ResultsCta text={cta} placement={`results_${tab}`} />}
       </div>
     </div>
   );

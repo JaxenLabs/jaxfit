@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { TOOLS, howTo, type ToolPage } from "@/content/tools";
 import { SITE_URL, abs, site } from "@/content/site";
 
-/** The address of a calculator page, e.g. https://…/jaxfit/bmi-calculator/. */
+/** The address of a calculator page, e.g. https://jaxfast.pages.dev/bmi-calculator/. */
 export const toolUrl = (t: ToolPage) => `${SITE_URL}${t.slug}/`;
 
 /**
- * <head> tags for a calculator page. The main page shows the intermittent
- * fasting calculator too, so it points search engines to that page as the
+ * <head> tags for a calculator page. The main page shows the BMI
+ * calculator too, so it points search engines to that page as the
  * one official address (canonical) instead of competing with it.
  */
 export function toolMetadata(t: ToolPage): Metadata {
@@ -45,7 +45,6 @@ export function pageJsonLd(t: ToolPage) {
           "Intermittent fasting schedules: 14:10, 16:8, 18:6, 20:4, 24h and custom",
           "24-hour fasting and eating window clock",
           "Cellular renewal and body insights timeline",
-          "Live fasting timer that keeps running when the tab is closed",
           "WHO BMI categories and healthy weight range",
           "Mifflin-St Jeor BMR and TDEE with a safe calorie target",
           "Goal date estimate with 7, 30 and 90-day weight trend",
